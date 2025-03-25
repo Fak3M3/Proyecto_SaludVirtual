@@ -11,26 +11,26 @@
 El equipo **Tibios ADS** presenta en este archivo nuestro proyecto para la clase de ADS, llamado **Medico a un click**. Por otro lado los equipos que trabajaran en este proyecto serian 4 los cuales son:
  - :finnadie: Equipo de documentación
     - Integrado por:
-        -Sanchez Zamora Reynathan
-        -Aranda Martínez Fernando
+        - Sanchez Zamora Reynathan
+        - Aranda Martínez Fernando
 
 - Equipo de desarrollo
-    -:nail_care: Equipo Frontend:
-        -Integrado por:
-            -Jiménez Meza Ana Harumi
-            -Ramírez Claudia Emilia
-            -Sánchez Santos Irma Nayeli
-    -:shipit: Equipo de Backend
+    - :nail_care: Equipo Frontend:
         - Integrado por:
-            -Alonso Sánchez Eduardo
-            -López Reyes José Roberto
-            -Rojas Barrón Isaac
-            -Arenas Garita Miguel
-    -:trollface: Equipo de Bases de datos
-        -Ingrado por:
-            -Vitales Herrera Hatziry
-            -Hernández Zamora Alejandro
-            Ortiz Villaseñor Alexandra
+            - Jiménez Meza Ana Harumi
+            - Ramírez Claudia Emilia
+            - Sánchez Santos Irma Nayeli
+    - :shipit: Equipo de Backend
+        - Integrado por:
+            - Alonso Sánchez Eduardo
+            - López Reyes José Roberto
+            - Rojas Barrón Isaac
+            - Arenas Garita Miguel
+    - :trollface: Equipo de Bases de datos
+        - Ingrado por:
+            - Vitales Herrera Hatziry
+            - Hernández Zamora Alejandro
+            - Ortiz Villaseñor Alexandra
 
 
     ## Como ejecutar
