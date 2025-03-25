@@ -16,7 +16,7 @@ El equipo **Tibios ADS** presenta en este archivo nuestro proyecto para la clase
         - Sanchez Zamora Reynathan
         - Aranda Martínez Fernando
 
-- Equipo de desarrollo
+- :neckbeard: Equipo de desarrollo
     - :nail_care: Equipo Frontend:
         - Integrado por:
             - Jiménez Meza Ana Harumi
