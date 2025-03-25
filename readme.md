@@ -2,11 +2,13 @@
 
 ## Proyecto **Salud virtual**
 ### INDICE
+- [Conócenos](#EQUIPO-DE-TRABAJO)
 - [Como ejecutar](#como-ejecutar)
 - [Sobre el codigo](#sobre-el-codigo)
 - [Cambios](#cambios-proximos)
 - [Actualizaciones](#Actualización)
 
+## EQUIPO  DE TRABAJO
 
 El equipo **Tibios ADS** presenta en este archivo nuestro proyecto para la clase de ADS, llamado **Medico a un click**. Por otro lado los equipos que trabajaran en este proyecto serian 4 los cuales son:
  - :finnadie: Equipo de documentación
