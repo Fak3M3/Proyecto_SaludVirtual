@@ -29,7 +29,7 @@ El equipo **Tibios ADS** presenta en este archivo nuestro proyecto para la clase
             - Rojas Barrón Isaac
             - Arenas Garita Miguel
     - :trollface: Equipo de Bases de datos
-        - Ingrado por:
+        - Integrado por:
             - Vitales Herrera Hatziry
             - Hernández Zamora Alejandro
             - Ortiz Villaseñor Alexandra
