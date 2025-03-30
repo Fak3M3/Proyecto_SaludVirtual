@@ -1,1 +1,308 @@
+\documentclass[letterpaper,12pt,oneside]{article}
+\usepackage[top=1in, left=0.9in, right=1.25in, bottom=1in]{geometry}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{ragged2e}
+\graphicspath{{Images/}}
 
+\usepackage{hyperref}
+\hypersetup{
+   colorlinks=true,
+   urlcolor=cyan,
+   linkcolor=black,
+   citecolor=black,
+   filecolor=magenta,
+   pdftitle={docSV},
+   pdfpagemode=FullScreen,
+}
+
+\begin{document}
+\justifying
+    %portada
+    \begin{titlepage}
+        \thispagestyle{empty}
+        \begin{minipage}[c][0.17\textheight][c]{0.25\textwidth}
+            \begin{center}
+            \hspace*{-13mm}
+            \includegraphics[ height=5cm]{Images/logo-ipn.png}
+            \end{center}
+        \end{minipage}
+        \begin{minipage}[c][0.195\textheight][t]{0.75\textwidth}
+            \begin{center}
+                \vspace{0.3cm}
+                {\color{black}\textsc{\large INSTITUTO POLITÉCNICO NACIONAL} }\\[0.5cm]
+                \vspace{0.3cm}
+                {\color{black}\hrule height3pt}
+                \vspace{.2cm}
+                {\color{black}\hrule height2pt}
+                \vspace{.8cm}
+                \textsc{\large ESCUELA SUPERIOR DE CÓMPUTO}\\[0cm] %
+            \end{center}
+        \end{minipage}
+    \begin{minipage}[c][0.81\textheight][t]{0.25\textwidth}
+        \vspace*{5mm}
+        \begin{center}
+            \hskip0.5mm
+            \vspace{5mm}
+            \hskip2pt
+            {\color{black}\vrule width3pt height13cm}
+            \hskip2mm
+            {\color{black}\vrule width1pt height13cm} \\
+            \vspace{5mm}
+            \hspace*{2mm}
+            \includegraphics[height=3cm]{Images/escudoESCOM.png}
+        \end{center}
+    \end{minipage}
+    \begin{minipage}[c][0.81\textheight][t]{0.75\textwidth}
+        \begin{center}
+            \vspace{0.5cm}
+            {\color{black}{\large \scshape ANÁLISIS Y DISEÑO DE SISTEMAS}}\\[.2in]
+            \vspace{2cm}            
+            \textsc{\large {PROYECTO: SALUD VIRTUAL}}\\[2cm]
+            {\large \scshape 
+                {\color{black}EQUIPO: TIBIOS}\\[2cm] 
+                {GRUPO: 5CM3}\\[2cm]
+                {DOCENTE: IDALIA MALDONADO CASTILLO}}
+                \vspace{0.5cm}
+        \end{center}
+    \end{minipage}
+    \end{titlepage}
+    %Índice
+    \tableofcontents
+    \newpage
+    %Objetivo
+    \section{Objetivo}
+        Desarrollar de una aplicación móvil que permitirá a los usuarios monitorear sus hábitos, rutinas y actividades diarias, brindándoles seguimiento y asistencia a través de recordatorios, alarmas y sugerencias personalizadas.
+    %Alcance del proyecto
+    \section{Alcance del proyecto}
+        Este proyecto consiste en diseñar una aplicación móvil que funcione como una herramienta integral para la gestión y monitoreo personalizado de la salud física, emocional y los hábitos de vida del usuario. La aplicación permitirá al usuario registrar, visualizar y analizar sus actividades cotidianas, incluyendo ejercicio físico, estado de ánimo, estrés, sueño y otras rutinas personales. A partir de estos datos, el sistema ofrecerá recomendaciones adaptativas, objetivos sugeridos y alertas inteligentes, con el fin de mejorar la calidad de vida del usuario, fomentar el autocuidado y apoyar el logro de metas personales de bienestar.
+        \newline \newline
+        El desarrollo se llevará a cabo utilizando una metodología ágil basada en Scrum, complementada con prácticas de Kanban para el seguimiento continuo de tareas, facilitando una gestión dinámica y visual del flujo de trabajo durante las distintas iteraciones del proyecto.
+        \newline \newline
+        El equipo de desarrollo está conformado por 12 integrantes, organizados en cuatro equipos especializados: Back-End, Front-End, Bases de Datos y Documentación, lo que permitirá una distribución clara de responsabilidades, una mayor eficiencia en el desarrollo y una mejor coordinación entre los diferentes componentes del sistema.
+        \newline \newline
+        El proyecto se desarrollará en un periodo total de 12 semanas, iniciando en marzo y concluyendo a finales de junio. Dentro de este periodo, se contempla un calendario iterativo dividido en sprints de desarrollo, según la metodología Scrum. La última fase del proyecto, comprendida del 16 al 23 de junio, estará destinada a la ejecución de pruebas finales, validación funcional y ajustes de última etapa, con el fin de garantizar la calidad, estabilidad y cumplimiento de los objetivos planteados antes de su entrega definitiva.
+        \newline \newline
+        A continuación, se detallan los elementos \textbf{incluidos} y \textbf{excluidos} del presente proyecto, con el fin de establecer límites precisos sobre su desarrollo, funciones y entregables.
+        \newline \newline
+        \textbf{Incluye:}
+        \begin{enumerate}
+            \item Gestión de Usuarios.
+                \begin{itemize}
+                    \item Sistema de registro e inicio de sesión con autenticación.
+                    \item Almacenamiento de información básica del usuario para personalización de la experiencia.
+                \end{itemize}
+            \item Gestión de hábitos.
+                \begin{itemize}
+                    \item Creación, edición y eliminación de hábitos personalizados por el usuario.
+                    \item Selección de hábitos predefinidos del catálogo disponible en el sistema.
+                    \item Definición de frecuencia y horario de los hábitos (diario, semanal, por horas).
+                \end{itemize}
+            \item Seguimiento de estado de ánimo.
+                \begin{itemize}
+                    \item Opción para registrar el estado emocional mediante emojis (feliz, triste, enojado, motivado).
+                    \item Generación de sugerencias de hábitos basadas en el estado de ánimo seleccionado.
+                \end{itemize}
+            \item Notificaciones y recordatorios.
+                \begin{itemize}
+                    \item Configuración del tipo de recordatorio preferido (sonido, vibración o texto).
+                    \item Envío de notificaciones en los horarios establecidos según los hábitos registrados.
+                \end{itemize}
+            \item Monitoreo y progreso.
+                \begin{itemize}
+                    \item Posibilidad de marcar hábitos como completados o fallidos.
+                    \item Visualización de hábitos activos en un calendario interactivo.
+                \end{itemize}
+            \item Personalización de hábitos.
+                \begin{itemize}
+                    \item Registro de un hábito personalizado.
+                    \item Registro por fechas del siguimiento de un hábito.
+                \end{itemize}
+            \item Integración con dispositivos externos.
+                \begin{itemize}
+                    \item Conexión con dispositivos inteligentes como smartwatches y pulseras de actividad.
+                    \item Obtención de métricas de salud como ritmo cardíaco, frecuencia respiratoria y nivel de actividad física.
+                \end{itemize}
+        \end{enumerate}
+
+        \textbf{No incluye:}
+        \begin{enumerate}
+            \item No incluye inteligencia artificial para sugerir hábitos personalizados.
+            \item No incluye integración con asistentes virtuales (Alexa, Google Assistant, Siri).
+            \item No incluye funcionalidades avanzadas de redes sociales, como compartir hábitos con amigos o comentarios dentro de la app.
+            \item No incluye monetización inicial, como suscripciones o compras dentro de la app.
+            \item No incluye soporte para múltiples idiomas.
+            \item No incluye análisis avanzado de datos ni reportes en PDF.
+        \end{enumerate}
+    %Sección de análisis
+    \section{Análisis}
+        %Análisis de requerimientos funcionales y no funcionales
+        \subsection{Requerimientos funcionales}
+            \begin{enumerate}
+                \item Gestión de usuarios.
+                \begin{itemize}
+                    \item EL usuario se registrará con su correo electrónico y una contraseña.
+                    \item La aplicación permitirá a los usuarios iniciar sesión de forma segura.
+                    \item EL usuario podrá restablecer su contraseña, en caso de que la olvide, mediante el correo electrónico registrado.
+                    \item El usuario podrán actualizar su información personal.
+                    \item Para activar la cuenta, los usuarios deberán confirmar su correo electrónico a través de un enlace de verificación enviado al correo registrado.
+                \end{itemize}
+            \item Gestión de hábitos.
+                \begin{itemize}
+                    \item El usuario podrán crear, editar y eliminar hábitos de acuerdo con sus preferencias.
+                    \item La aplicación deberá mostrar una lista de hábitos predefinidos (ejemplo: hacer ejercicio, beber agua, leer) que los usuarios podrán agregar fácilmente.
+                    \item El usuario podrán definir cada cuánto quieren realizar un hábito (diario, semanal, cada cierta hora, etc.).
+                    \item El usuario podrá marcar hábitos como terminados o completados y llevar un seguimiento de los que ha cumplido o no.
+                    \item El usuario podrán ver un historial de sus hábitos con fechas específicas.
+                    \item El usuario podrá ver un resumen de su progreso, indicando qué porcentaje de hábitos han cumplido y sugerencias para poder mejorar.
+                    \item La aplicación mostrará hábitos sugeridos según diferentes categorías (ejemplo: "Bienestar", "Ejercicio", "Productividad") para que el usuario pueda agregarlos según sus preferencias.
+                \end{itemize}
+            \item Seguimiento del estado de ánimo.
+                \begin{itemize}
+                    \item El usuario podrán registrar su estado de ánimo con emojis representativos (feliz, triste, enojado, motivado, etc.).
+                    \item La aplicación podrá sugerir hábitos que ayuden a mejorar el bienestar del usuario dependiendo del estado de ánimo registrado.
+                \end{itemize}
+            \item Notificaciones y recordatorios.
+                \begin{itemize}
+                    \item El usuario podrán configurar recordatorios y notificaciones para cumplir sus hábitos.
+                    \item El usuario podrá elegir el tipo de notificación (sonido, vibración o mensaje de texto en la aplicación) que desea recibir.
+                    \item La aplicación enviará las notificaciones en los horarios que el usuario haya definido para cada hábito.
+                \end{itemize}
+            \item Monitoreo de salud física.
+                \begin{itemize}
+                    \item El usuario podrán registrar su actividad física y su duración.
+                    \item  El usuario podrá llevar un registro de comidas y un control calórico.
+                    \item El usuario podrá registrar cuántas horas ha dormido cada día.
+                    \item La aplicación mostrará un análisis del progreso físico, con datos como la cantidad de ejercicio realizado y la evolución de los hábitos de la salud.
+                    \item  El usuario podrá definir una meta diaria de calorías consumidas para controlar su alimentación.
+                \end{itemize}
+            \item Monitoreo de salud mental.
+                \begin{itemize}
+                    \item La aplicación brindará al usuario ejercicios de relajación y meditación guiada.
+                    \item El usuario podrá ver un historial de sus emociones para analizar su bienestar a lo largo del tiempo.
+                \end{itemize}
+            \item Visualización y reportes.
+                \begin{itemize}
+                    \item La aplicación generará gráficos y estadísticas sobre el progreso del usuario.
+                    \item El usuario podrá comparar los hábitos completados con las metas establecidas.
+                    \item El usuario podrá ver su evolución en un periodo de tiempo (mes, trimestre o año).
+                    \item La aplicación generará reportes que muestren el cumplimiento de metas a lo largo del tiempo.
+                \end{itemize}
+            \item Sistema de recompensas.
+                \begin{itemize}
+                    \item Los usuarios podrán ganar puntos por cada hábito completado.
+                    \item El usuario podrá desbloquear logros al alcanzar ciertos objetivos (ejemplo: completar 30 días seguidos de actividad física).
+                    \item La aplicación mostrará un ranking de usuarios basado en los puntos obtenidos (solo se mostrará la base de datos con los mejores puntajes, si el usuario lo permite).
+                    \item La aplicación incorporará logros especiales para motivar a los usuarios (ejemplo: "primer semana cumplida", "100 hábitos completados").
+                \end{itemize}
+            \item Acceso y restricciones.
+                \begin{itemize}
+                    \item Los usuarios no registrados tendrán funciones limitadas.
+                    \item Los usuarios registrados tendrán acceso a todas las funciones.
+                \end{itemize}
+        \end{enumerate}
+        
+        \subsection{Requerimientos no funcionales}
+            \begin{enumerate}
+                \item Seguridad.
+                    \begin{itemize}
+                        \item La aplicación debe tener mecanismos de autenticación para asegurar el acceso solo a los usuarios autorizados.
+                        \item La aplicación debe cifrar los datos sensibles del usuario tanto en el reposo como en el tránsito.
+                        \item La aplicación debe tener una gestión de errores que evite la exposición de información relevante en mensajes de error o registros.
+                        \item La aplicación debe limitar el número de intentos fallidos de autenticación y aplicar bloqueos temporales para evitar accesos no autorizados y de índole sospechosa.
+                    \end{itemize}
+                \item Disponibilidad.
+                    \begin{itemize}
+                        \item La aplicación debe de estar disponible al menos el 99.5\% del tiempo durante cada mes del calendario.
+                        \item La aplicación debe de poder atender hasta 500 usuarios concurrentes sin degradación significativa del rendimiento.
+                        \item En caso de pérdida de conexión, los datos registrados por el usuario se almacenarán localmente y se sincronizarán automáticamente cuando se recupere el acceso a internet.
+                        \item Las interrupciones planificadas para mantenimiento no deben superar las 4 horas mensuales y deben ser notificadas con al menos 24 horas de anticipación.
+                        \item Las notificaciones de hábitos y recordatorios deberán enviarse puntualmente, incluso si la aplicación no está abierta, con una desviación máxima de 2 minutos respecto a la hora programada.
+                    \end{itemize}
+                \item Accesibilidad.
+                    \begin{itemize}
+                        \item El sistema debe seguir las pautas de accesibilidad WCAG 2.1.
+                        \item El sistema deberá ser compatible con versiones de Android 8.0 (Oreo) o superior.
+                        \item El sistema debe contener una paleta de colores con buen contraste para mejorar la visibilidad de la información.
+                        \item La aplicación deberá ser responsiva para adaptarse a los distintos tamaños de dispositivos con sistema Android.
+                        \item El sistema deberá presentar mensajes de error claros y útiles ante cualquier fallo en la aplicación.
+                        \item Cualquier elemento interactivo de la aplicación deberá ser fácilmente accesible en la navegación del sistema.
+                        \newline
+                    \end{itemize}
+                \item Tecnologías.
+                    \begin{itemize}
+                        \item La aplicación se desarrollará en Kotlin para garantizar compatibilidad y optimización en Android.
+                        \item Se utilizará Android Studio como IDE principal para el desarrollo y pruebas.
+                        \item El sistema utilizará Realtime  Database y Cloud Firestore como base de datos para el almacenamiento de información, hábitos y rutinas de los usuarios.
+                        \item La aplicación empleará AlarmManager para la gestión de notificaciones y alarmas.
+                        \item El sistema adoptará el patrón MVVM (Model-View-ViewModel) para facilitar la mantenibilidad y escalabilidad del código.
+                        \item Se utilizará GitHub para el control de versiones y colaboración en el desarrollo.
+                    \end{itemize}
+            \end{enumerate}
+        \subsection{Actores}
+        \subsection{Reglas de negocio}
+            \begin{enumerate}
+                \item Monitoreo del usuario.
+                    \begin{itemize}
+                        \item El cumplimiento de hábitos del usuario será evaluado en porcentajes, los cuales irán disminuyendo a medida que descuide dicho hábito. El porcentaje podrá ser recuperado a medida que el usuario retome el hábito correspondiente.
+                        \item Si un usuario tiene un porcentaje de cumplimiento menor al 80\%, en un hábito, se activará una alerta con sugerencias orientadas a mejorar su cumplimiento del hábito.
+                        \item Si el usuario no interactúa con la alerta de sugerencia dentro de un periodo de 48 horas desde que se emitió, el hábito asociado será marcado automáticamente como “Hábito perdido”.
+                        \item Si un usuario mantiene un hábito durante 30 días consecutivos con al menos un 90\% de cumplimiento, obtendrá un logro por su progreso en la categoría correspondiente a dicho hábito.
+                        \item El usuario podrá personalizar (dadas las opciones de periodo definidas en la aplicación), la frecuencia con la que recibe la retroalimentación que la aplicación ofrece evaluando sus actividades y estados de ánimo.
+                        \item Si el usuario incrementa el porcentaje de cumplimiento de un hábito en al menos un 10\% con respecto a la semana anterior, se le otorgarán puntos adicionales como reconocimiento a su esfuerzo.
+                        \item La aplicación calculará automáticamente el porcentaje de cumplimiento de cada hábito en intervalos de tiempo definidos según la frecuencia de monitoreo configurada por el usuario.
+                        \item Si un hábito presenta cinco días consecutivos de incumplimiento, se ofrecerá al usuario la opción de reiniciar el progreso de ese hábito. Esto permitiría comenzar de nuevo sin la acumulación de penalizaciones que puedan desmotivar.
+                        \item El sistema registrará automáticamente el estado físico del usuario con los parámetros biométricos que captura la aplicación cada 4 horas sin omitir ningún intervalo. Asimismo, el usuario podrá ingresar manualmente su estado anímico con la misma frecuencia, limitando sus registros a los horarios en los que se encuentre disponible, es decir, tratando de excluir los periodos de magrugada y media noche
+                        \item El sistema recopilará los datos biométricos que siguen, frecuencia cardiaca, tensión arterial y nivel de oxígeno en la sangre. Si alguna medición se encuentra fuera de los rangos normales, el sistema emitirá una alerta para notificar al usuario al respecto.
+                    \end{itemize}
+            \end{enumerate}
+            \begin{enumerate}
+                \item Personalización de hábitos.
+                \begin{itemize}
+                    \item El usuario no puede elegir más de una vez el mismo hábito de la lista predeterminada que muestra la aplicación.
+                    \item Un hábito no puede tener asignada una calendarización específica si el usuario no lo ha seleccionado previamente.
+                    \item El usuario puede agregar una cantidad máxima de 10 hábitos combinados entre los que decida personalizar y los predeterminados por la aplicación.
+                    \item Dos o más hábitos no pueden estar programados para realizarse a la misma hora.
+                \end{itemize}
+            \end{enumerate}
+            \begin{enumerate}
+                \item Retroalimentación.
+                \begin{itemize}
+                    \item Si el usuario registra un estado de ánimo negativo, el sistema sugerirá hábitos que mejoren su bienestar emocional. Por otro lado, si este es positivo, se sugerirán actividades para mantenerlo o mejorarlo.
+                    \item El usuario recibirá una notificación positiva cada que termine una actividad. Si no se completa, se enviará un recordatorio cada 5 minutos para poder retomarlo.
+                    \item El sistema generará informes semanales para mostrar el estado de emocional del usuario e informes mensuales para poder mostrar patrones y recomendaciones personalizadas para mejorar el bienestar del usuario.
+                    \item La aplicación proporcionará retroalimentación sobre metas que combinan actividad física y bienestar emocional, correlacionando los avances físicos con el estado de ánimo del usuario.
+                \end{itemize}
+            \end{enumerate}
+            \begin{enumerate}
+                \item Monitoreo de actividades.
+                \begin{itemize}
+                    \item La aplicación permitirá al usuario registrar sus horas de sueño diariamente.
+                    \item Los usuarios podrán ingresar manualmente las horas de inicio y fin de su descanso.
+                    \item Las actividades físicas registradas deberán tener una duración mínima para ser consideradas válidas y para ser tomadas en cuenta para el progreso de recompensas.
+                    \item La aplicación calculará automáticamente el porcentaje de cumplimiento de hábitos al finalizar cada día, tomando en cuenta solo aquellos que tienen frecuencia diaria y hayan sido marcados como completados.
+                    \item El usuario podrá crear y personalizar actividades y definir su frecuencia (diaria, semanal) y establecer los recordatorios de estas.
+                    \item Todo hábito creado por el usuario deberá pertenecer a una categoría predefinida (Salud, Productividad, Bienestar).
+                    \item Las actividades sugeridas estarán preconfiguradas, pero también podrán ser personalizadas según las preferencias del usuario.
+                    \item El sistema proporcionará una serie de ejercicios de relajación y meditación guiada que los usuarios podrán acceder en cualquier momento.
+                \end{itemize}
+            \end{enumerate}
+            \begin{enumerate}
+                \item Cuentas de usuario.
+                \begin{itemize}
+                    \item El sistema no permitirá cuentas de correo electrónico duplicadas. Dado que este será el medio de recuperación de cada cuenta, deber ser único y debe pertenecer a alguno de los dominios Gmail, Hotmail, Outlook o icloud.
+                    \item La creación de una nueva cuenta requerirá la validación de un correo electrónico, dicha validación tendrá un tiempo de expiración de 7 días.
+                    \item La contraseña que el usuario quiera ligar a su perfil deberá ser de al menos 8 caracteres, deberá incluir al menos una mayúscula, una minúscula, un número y un carácter especial.
+                    \item La aplicación no permitirá registrar usuarios con fecha de nacimiento anterior a los últimos 4 años, puesto que la aplicación no va enfocada a recién nacidos.
+                    \item El nombre que ingresé el usuario no tendrá un límite mínimo de caracteres, puede usar diminutivos si así lo desea.
+                    \item El sistema permitirá un máximo de tres intentos fallidos de inicio de sesión por cuenta. Al superar este límite, la cuenta se bloqueará temporalmente por un tiempo definido de cinco minutos para prevenir accesos no autorizados. Si después de este periodo se acumula un cuarto intento fallido, la cuenta será bloqueada de forma indefinida y solo podrá reactivarse mediante un proceso de sesión verificación o contacto con soporte. El contador de intentos fallidos se reiniciará tras realizar un inicio de sesión exitoso.
+                    \item El cambio de contraseña de la cuenta del usuario va a poder ser realizado desde el apartado de configuración de la cuenta, donde no podrá ingresar sus últimas 3 contraseñas.
+                    \item Al finalizar el proceso de cambio de contraseña, el usuario será notificado por correo electrónico confirmando el cambio.
+                    \item La eliminación de una cuenta deberá ser iniciada por el usuario autenticado y podrá requerir una confirmación adicional para evitar eliminaciones accidentales.
+                    \item Tras la eliminación de una cuenta se retendrán los datos asociados para dar un margen de recuperación de cuenta sin perder el progreso generado en un periodo establecido (periodo de gracia).
+                \end{itemize}
+            \end{enumerate}
+        \subsection{Diagrama de casos de uso}
+        \subsection{Detalle de diagrama de casos de uso}
+\end{document}
