@@ -10,7 +10,7 @@
 
 ## EQUIPO  DE TRABAJO
 
-El equipo **Tibios ADS** presenta en este archivo nuestro proyecto para la clase de ADS, llamado **Medico a un click**. Por otro lado los equipos que trabajaran en este proyecto serian 4 los cuales son:
+El equipo **Tibios ADS** presenta en este archivo nuestro proyecto para la clase de ADS, llamado **TibiBalance**. Por otro lado los equipos que trabajaran en este proyecto serian 4 los cuales son:
  - :finnadie: Equipo de documentación
     - Integrado por:
         - Sanchez Zamora Reynathan
