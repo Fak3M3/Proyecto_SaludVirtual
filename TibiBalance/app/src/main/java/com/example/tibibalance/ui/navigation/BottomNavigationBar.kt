@@ -3,73 +3,59 @@ package com.example.tibibalance.ui.navigation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar // Material 3
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults // Para colores personalizados (opcional)
+// import androidx.compose.material3.NavigationBarItemDefaults // Para colores (opcional)
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+// import androidx.compose.runtime.getValue // Ya no se necesita currentBackStackEntryAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color // Para colores personalizados (opcional)
+// import androidx.compose.ui.graphics.Color // Para colores (opcional)
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.currentBackStackEntryAsState
+// Ya no necesita NavController directamente para esta lógica
+// import androidx.navigation.NavController
+// import androidx.navigation.NavDestination.Companion.hierarchy
+// import androidx.navigation.NavGraph.Companion.findStartDestination
+// import androidx.navigation.compose.currentBackStackEntryAsState
 
 /**
- * Composable reutilizable que muestra la barra de navegación inferior.
+ * Composable reutilizable que muestra la barra de navegación inferior,
+ * adaptado para funcionar con un HorizontalPager.
  *
- * @param navController El NavController que gestiona la navegación principal.
- * @param items La lista de objetos [Screen.BottomNavScreen] a mostrar en la barra.
- * @param modifier Modificador opcional para aplicar a la barra.
+ * @param items La lista de objetos [Screen.MainScreen] a mostrar.
+ * @param currentPageIndex El índice de la página actualmente visible en el Pager.
+ * @param onItemClick Lambda que se ejecuta cuando se hace clic en un ítem,
+ * pasando el índice de la página a la que se debe ir.
+ * @param modifier Modificador opcional.
  */
 @Composable
 fun BottomNavigationBar(
-    navController: NavController,
-    items: List<Screen.BottomNavScreen>,
+    items: List<Screen.MainScreen>, // <--- CAMBIO: Ahora usa Screen.MainScreen
+    currentPageIndex: Int,         // <--- NUEVO: Índice de la página actual del Pager
+    onItemClick: (pageIndex: Int) -> Unit, // <--- NUEVO: Lambda para cambiar de página
     modifier: Modifier = Modifier
+    // Ya no necesita NavController aquí
 ) {
     NavigationBar(
         modifier = modifier
-        // Puedes añadir modificadores como background color aquí si quieres:
-        // .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        // Obtiene la entrada actual de la pila de navegación para saber qué ruta está activa
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
+        // Itera sobre cada pantalla definida para la barra/pager
+        items.forEach { screen -> // 'screen' ahora es de tipo Screen.MainScreen
 
-        // Itera sobre cada pantalla definida para la barra inferior
-        items.forEach { screen ->
-            // Determina si esta pantalla está seleccionada actualmente,
-            // comprobando si su ruta está en la jerarquía de la ruta activa.
-            val isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
+            // Determina si este ítem está seleccionado comparando índices
+            val isSelected = screen.pageIndex == currentPageIndex // <--- CAMBIO: Lógica de selección basada en índice
 
-            // Crea un item en la barra de navegación para esta pantalla
             NavigationBarItem(
                 icon = { Icon(screen.icon, contentDescription = stringResource(screen.titleResId)) },
                 label = { Text(stringResource(screen.titleResId)) },
                 selected = isSelected,
                 onClick = {
-                    // Navega a la ruta de la pantalla seleccionada
-                    navController.navigate(screen.route) {
-                        // Pop up hasta el destino inicial del grafo para evitar acumular
-                        // pantallas en la pila al seleccionar items repetidamente.
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true // Guarda el estado de la pantalla de origen
-                        }
-                        // Evita lanzar múltiples copias del mismo destino si se re-selecciona
-                        launchSingleTop = true
-                        // Restaura el estado si se vuelve a una pantalla previamente seleccionada
-                        restoreState = true
+                    // Llama a la lambda pasada para manejar el clic,
+                    // indicando el índice de la página a la que ir.
+                    if (!isSelected) { // Evita acción si ya está seleccionado
+                        onItemClick(screen.pageIndex) // <--- CAMBIO: Llama a onItemClick
                     }
-                },
+                }
                 // Opcional: Personalizar colores
-                // colors = NavigationBarItemDefaults.colors(
-                //     selectedIconColor = MaterialTheme.colorScheme.primary,
-                //     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                //     selectedTextColor = MaterialTheme.colorScheme.primary,
-                //     unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                //     indicatorColor = MaterialTheme.colorScheme.surfaceVariant // Color del "círculo" indicador
-                // )
+                // colors = NavigationBarItemDefaults.colors(...)
             )
         }
     }

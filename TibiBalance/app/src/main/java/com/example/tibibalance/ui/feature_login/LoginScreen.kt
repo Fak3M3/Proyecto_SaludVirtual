@@ -80,9 +80,8 @@ fun LoginScreen(
                         delay(1500)
                         uiState = uiState.copy(isLoading = false)
                         // Simulación:
-                        // if (uiState.email == "test@test.com") { onLoginSuccess() }
-                        // else { uiState = uiState.copy(generalError = "Credenciales inválidas") }
-                        uiState = uiState.copy(generalError = "Simulación: Login fallido")
+                        if (uiState.email == "test@test.com") { onLoginSuccess() }
+                        else { uiState = uiState.copy(generalError = "Credenciales inválidas") }
                     }
                 }
             }

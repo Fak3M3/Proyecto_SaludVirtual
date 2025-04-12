@@ -4,33 +4,40 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.tibibalance.ui.main.MainAppScaffold // Importa el Scaffold principal
+import com.example.tibibalance.ui.main.MainAppScaffoldPager // Importa el nuevo Scaffold con Pager
 
 /**
  * Define el grafo de navegación anidado para la sección principal de la app (post-autenticación).
- * Su función principal es configurar el entorno (Scaffold con BottomBar) donde se
- * mostrarán las pantallas principales y de detalle.
+ * Ahora carga el MainAppScaffoldPager que contiene el HorizontalPager.
  *
  * @param navController El NavController raíz.
  */
 fun NavGraphBuilder.mainGraph(navController: NavHostController) {
-    // Define el grafo anidado con su ruta (Graph.MAIN)
     navigation(
         route = Graph.MAIN,
-        // Define una ruta interna simple como punto de entrada a este grafo.
-        // Podría ser cualquier string, representa el contenido principal.
-        startDestination = "main_content_route"
+        startDestination = "main_pager_content" // Ruta interna para el contenido principal
     ) {
-        // La única entrada directa en este grafo es el Composable que
-        // configura el Scaffold y el NavHost interno.
-        composable(route = "main_content_route") {
-            // Llama al Composable que contiene el Scaffold y el NavHost interno.
-            // Pasa el NavController raíz, ya que el NavHost interno también lo usará.
-            MainAppScaffold(rootNavController = navController)
+        composable(route = "main_pager_content") {
+            // Llama al Composable que contiene el Scaffold y el HorizontalPager
+            MainAppScaffoldPager(rootNavController = navController)
         }
-        // NOTA IMPORTANTE: Las definiciones de las pantallas individuales
-        // (DashboardScreen, HabitsScreen, AddHabitScreen, SettingsScreen, etc.)
-        // NO van aquí directamente. Se definen DENTRO del NavHost que está
-        // en MainAppScaffold.kt. Este grafo solo se encarga de "lanzar" ese Scaffold.
+        // --- Navegación a Detalles (Fuera del Pager) ---
+        // Si necesitas navegar a pantallas de detalle DESDE las pantallas del Pager,
+        // defines esas rutas aquí, al mismo nivel que "main_pager_content".
+        // El rootNavController se usaría para navegar a ellas.
+        // Ejemplo:
+        /*
+        composable(route = Screen.Settings.route) {
+             SettingsScreen(onNavigateBack = { navController.navigateUp() })
+        }
+        composable(
+             route = Screen.HabitDetail.route,
+             arguments = listOf(navArgument("habitId") { type = NavType.StringType })
+        ) { backStackEntry ->
+             val habitId = backStackEntry.arguments?.getString("habitId") ?: "ID_INVALIDO"
+             HabitDetailScreen(habitId = habitId, onNavigateBack = { navController.navigateUp() })
+        }
+        */
+        // --- Fin Navegación a Detalles ---
     }
 }

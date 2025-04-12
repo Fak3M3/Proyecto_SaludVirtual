@@ -1,117 +1,105 @@
-package com.example.tibibalance.ui.main // O donde prefieras colocar este Composable principal
+package com.example.tibibalance.ui.main
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Box // Importa Box si quieres mostrar un texto placeholder
-import androidx.compose.foundation.layout.fillMaxSize // Para Box
-import androidx.compose.foundation.layout.padding // Necesario para usar innerPadding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text // Placeholder
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment // Para Box
+import androidx.compose.foundation.ExperimentalFoundationApi // Necesario para Pager
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager // Importa el Pager
+import androidx.compose.foundation.pager.rememberPagerState // Importa el estado del Pager
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType // Para argumentos
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.navArgument // Para argumentos
-import com.example.tibibalance.ui.navigation.BottomNavigationBar
+import com.example.tibibalance.ui.navigation.BottomNavigationBar // Reutilizamos el Composable de la barra
 import com.example.tibibalance.ui.navigation.Screen
-import com.example.tibibalance.ui.navigation.bottomNavScreens
-
-// --- Importaciones de Pantallas (Puedes mantenerlas comentadas o quitarlas por ahora) ---
-// import com.example.tibibalance.ui.dashboard.DashboardScreen
-// import com.example.tibibalance.ui.habits.HabitsScreen
-// import com.example.tibibalance.ui.profile.ProfileScreen
-// import com.example.tibibalance.ui.feature_addhabit.AddHabitScreen
-// import com.example.tibibalance.ui.settings.SettingsScreen
-// import com.example.tibibalance.ui.habit_detail.HabitDetailScreen
-// --- Fin Importaciones ---
+import com.example.tibibalance.ui.navigation.mainPagerScreens // La lista actualizada
+// Importa tus placeholders (asegúrate que los paquetes sean correctos)
+import com.example.tibibalance.ui.feature_placeholder1.PlaceholderScreen1 as Placeholder1Screen
+import com.example.tibibalance.ui.feature_placeholder2.PlaceholderScreen2 as Placeholder2Screen
+import com.example.tibibalance.ui.feature_placeholder3.PlaceholderScreen3 as Placeholder3Screen
+import com.example.tibibalance.ui.feature_placeholder4.PlaceholderScreen4 as Placeholder4Screen
+import com.example.tibibalance.ui.feature_placeholder5.PlaceholderScreen5 as Placeholder5Screen
+import kotlinx.coroutines.launch // Para lanzar la animación del Pager
 
 /**
- * Composable que define la estructura principal de la aplicación post-autenticación.
- * Incluye el Scaffold con la barra de navegación inferior y el NavHost interno.
- * ¡MODIFICADO TEMPORALMENTE para evitar errores de compilación!
+ * Scaffold principal que utiliza HorizontalPager para la navegación
+ * principal con animación de deslizamiento y sincronizado con BottomNavigationBar.
  *
- * @param rootNavController El NavController principal (del grafo raíz).
+ * @param rootNavController El NavController raíz (puede ser necesario para navegar a detalles fuera del Pager).
  */
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainAppScaffold(
-    rootNavController: NavHostController
+fun MainAppScaffoldPager(
+    rootNavController: NavHostController // Podría necesitarse para navegar a pantallas de detalle
 ) {
+    // Estado para el HorizontalPager
+    val pagerState = rememberPagerState(pageCount = { mainPagerScreens.size })
+    // Coroutine scope para lanzar animaciones del pager
+    val scope = rememberCoroutineScope()
+
+    // Deriva el título actual basado en la página del Pager
+    val currentScreen = mainPagerScreens[pagerState.currentPage]
+    val currentTitle = stringResource(id = currentScreen.titleResId)
+
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(currentTitle) }, // Título dinámico
+                // Puedes añadir acciones o un botón de menú aquí si es necesario
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer, // Ejemplo de color
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            )
+        },
         bottomBar = {
-            // La barra inferior se mostrará, aunque las pantallas no existan aún
-            BottomNavigationBar(navController = rootNavController, items = bottomNavScreens)
+            // Barra inferior modificada para interactuar con el PagerState
+            NavigationBar {
+                mainPagerScreens.forEachIndexed { index, screen ->
+                    val isSelected = pagerState.currentPage == index
+                    NavigationBarItem(
+                        icon = { Icon(screen.icon, contentDescription = stringResource(screen.titleResId)) },
+                        label = { Text(stringResource(screen.titleResId)) },
+                        selected = isSelected,
+                        onClick = {
+                            // Al hacer clic, anima el Pager a la página correspondiente
+                            if (!isSelected) { // Evita animar a la página actual
+                                scope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            }
+                        }
+                    )
+                }
+            }
         }
-        // topBar = { MainTopAppBar(...) }
     ) { innerPadding ->
-
-        // NavHost INTERNO: Gestiona las pantallas DENTRO de la sección principal.
-        NavHost(
-            navController = rootNavController,
-            // Mantenemos una ruta inicial válida, aunque su composable esté comentado
-            startDestination = Screen.BottomNavScreen.Dashboard.route,
-            modifier = Modifier.padding(innerPadding)
-            // route = Graph.MAIN_CONTENT // Opcional
-        ) {
-            // --- ¡BLOQUES COMPOSABLE COMENTADOS TEMPORALMENTE! ---
-            // Descomenta y completa cada bloque cuando implementes la pantalla correspondiente.
-
-            composable(route = Screen.BottomNavScreen.Dashboard.route) {
-                // DashboardScreen(...)
-                // Placeholder temporal para que se vea algo:
-                Box(modifier=Modifier.fillMaxSize(), contentAlignment = Alignment.Center){ Text("Dashboard (Pendiente)") }
+        // HorizontalPager ocupa el área de contenido del Scaffold
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding), // Aplica el padding del Scaffold
+            // key = { index -> mainPagerScreens[index].route } // Clave opcional para estabilidad
+        ) { pageIndex ->
+            // Muestra el Composable placeholder correspondiente a la página actual
+            val screen = mainPagerScreens[pageIndex]
+            when (screen) {
+                is Screen.MainScreen.Placeholder1 -> Placeholder1Screen(screenName = stringResource(id = screen.titleResId))
+                is Screen.MainScreen.Placeholder2 -> Placeholder2Screen(screenName = stringResource(id = screen.titleResId))
+                is Screen.MainScreen.Placeholder3 -> Placeholder3Screen(screenName = stringResource(id = screen.titleResId))
+                is Screen.MainScreen.Placeholder4 -> Placeholder4Screen(screenName = stringResource(id = screen.titleResId))
+                is Screen.MainScreen.Placeholder5 -> Placeholder5Screen(screenName = stringResource(id = screen.titleResId))
             }
-            composable(route = Screen.BottomNavScreen.Habits.route) {
-                // HabitsScreen(...)
-                Box(modifier=Modifier.fillMaxSize(), contentAlignment = Alignment.Center){ Text("Hábitos (Pendiente)") }
-            }
-            composable(route = Screen.BottomNavScreen.Profile.route) {
-                // ProfileScreen(...)
-                Box(modifier=Modifier.fillMaxSize(), contentAlignment = Alignment.Center){ Text("Perfil (Pendiente)") }
-            }
-            composable(route = Screen.AddHabit.route) {
-                // AddHabitScreen(...)
-                Box(modifier=Modifier.fillMaxSize(), contentAlignment = Alignment.Center){ Text("Añadir Hábito (Pendiente)") }
-            }
-            composable(route = Screen.Settings.route) {
-                // SettingsScreen(...)
-                Box(modifier=Modifier.fillMaxSize(), contentAlignment = Alignment.Center){ Text("Ajustes (Pendiente)") }
-            }
-            composable(
-                route = Screen.HabitDetail.route,
-                arguments = listOf(navArgument("habitId") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val habitId = backStackEntry.arguments?.getString("habitId") ?: "ID_INVALIDO"
-                // HabitDetailScreen(habitId = habitId, ...)
-                Box(modifier=Modifier.fillMaxSize(), contentAlignment = Alignment.Center){ Text("Detalle Hábito ID: $habitId (Pendiente)") }
-            }
-
-            // --- Fin Bloques Comentados ---
+            // NOTA: Si estas pantallas necesitan navegar a pantallas de detalle
+            // (que NO están en el Pager), necesitarás pasarles el 'rootNavController'
+            // y ellas llamarán a rootNavController.navigate(...)
         }
     }
 }
-/*
-
-**Cambios Realizados:**
-
-1.  **Comentados los `composable` internos:** Las llamadas a `DashboardScreen`, `HabitsScreen`, etc., dentro del `NavHost` interno han sido comentadas o reemplazadas por un simple `Text` dentro de un `Box`.
-2.  **Importaciones (Opcional):** Puedes mantener las importaciones comentadas o eliminarlas por ahora, ya que las funciones no se están llamando.
-3.  **Placeholders Visuales:** Añadí un `Box` con un `Text` dentro de cada `composable` comentado para que, si navegas a estas rutas, veas un indicador visual de que llegaste ahí, en lugar de una pantalla completamente en blanco.
-
-**Resultado:**
-
-Con esta modificación, el archivo `MainAppScaffold.kt` ya no debería darte errores de compilación por referencias no resueltas. Podrás:
-
-1.  Ejecutar la aplicación.
-2.  Ver la pantalla de Login (placeholder o real).
-3.  Navegar a Registro y Olvidé Contraseña (placeholders).
-4.  Probar la acción "Simular Login Exitoso" o "Simular Registro Exitoso". Esto ejecutará `navController.navigate(Graph.MAIN)` y te llevará a la estructura definida por `MainAppScaffold`. Verás el `Scaffold` con la barra inferior y el texto placeholder correspondiente a la `startDestination` del `NavHost` interno (en este caso, "Dashboard (Pendiente)").
-
-Cuando estés listo para implementar las pantallas principales, simplemente:
-
-1.  Crea los archivos y Composables reales (`DashboardScreen.kt`, etc.).
-2.  Vuelve a `MainAppScaffold.kt`.
-3.  Descomenta/añade las importaciones correctas.
-4.  Descomenta el bloque `composable` correspondiente y reemplaza el `Box` con `Text` por la llamada a tu Composable real (e.g., `DashboardScreen(...)*/

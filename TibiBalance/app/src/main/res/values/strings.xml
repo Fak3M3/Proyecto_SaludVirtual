@@ -6,4 +6,9 @@
     <string name="screen_title_login">Login</string>
     <string name="screen_title_register">Register</string>
     <string name="screen_title_add_habit">Add Habit</string>
+    <string name="screen_title_placeholder1">Inicio</string>
+    <string name="screen_title_placeholder2">Hábitos</string>
+    <string name="screen_title_placeholder3">Resumen</string>
+    <string name="screen_title_placeholder4">Otro placeholder\n</string>
+    <string name="screen_title_placeholder5">Configuración</string>
 </resources>
