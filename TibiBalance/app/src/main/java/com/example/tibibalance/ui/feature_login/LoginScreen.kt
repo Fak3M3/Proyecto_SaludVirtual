@@ -1,108 +1,89 @@
 package com.example.tibibalance.ui.feature_login
 
+// ... otras importaciones de foundation, material, runtime ...
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.platform.LocalFocusManager // Para mover el foco
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController // Para ocultar teclado
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+
+// --- Importaciones Corregidas ---
+// Importa directamente las clases/interfaces desde el paquete donde están definidas (en LoginContract.kt)
+import com.example.tibibalance.ui.feature_login.LoginUiState
+import com.example.tibibalance.ui.feature_login.LoginEvent
+import com.example.tibibalance.ui.feature_login.LoginNavigationEvent // Asegúrate que esta también esté
+// --- Fin Importaciones Corregidas ---
+
+import com.example.tibibalance.ui.feature_login.LoginViewModel
 import com.example.tibibalance.ui.components.LoadingIndicator
-import com.example.tibibalance.ui.components.StyledButton // Botón primario
+import com.example.tibibalance.ui.components.StyledButton
 import com.example.tibibalance.ui.theme.TibiBalanceTheme
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch // Para corutinas en placeholders
+import com.example.tibibalance.R
+import kotlinx.coroutines.flow.collectLatest
 
-// --- Placeholders (Mover a LoginContract.kt y LoginViewModel.kt) ---
-data class LoginUiState(
-    val email: String = "",
-    val password: String = "",
-    val isLoading: Boolean = false,
-    val emailError: String? = null,
-    val passwordError: String? = null,
-    val generalError: String? = null
-)
-
-sealed interface LoginEvent {
-    data class EmailChanged(val value: String) : LoginEvent
-    data class PasswordChanged(val value: String) : LoginEvent
-    object LoginClicked : LoginEvent
-    object GoogleSignInClicked : LoginEvent
-    object RegisterLinkClicked : LoginEvent
-    object ForgotPasswordLinkClicked : LoginEvent
-    object GeneralErrorShown : LoginEvent
-}
-// --- Fin Placeholders ---
-
+/**
+ * Composable principal para la pantalla de Login. (Refactorizado + Navegación)
+ * (...) // KDoc anterior omitido
+ */
 @Composable
 fun LoginScreen(
-    // viewModel: LoginViewModel = hiltViewModel(),
+    viewModel: LoginViewModel = viewModel(),
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit,
     onNavigateToForgotPassword: () -> Unit
 ) {
-    // --- ViewModel y Estado (Usando placeholders por ahora) ---
-    var uiState by remember { mutableStateOf(LoginUiState()) }
-    val scope = rememberCoroutineScope()
-    val onEvent: (LoginEvent) -> Unit = { event ->
-        when(event) {
-            is LoginEvent.EmailChanged -> uiState = uiState.copy(email = event.value, emailError = null, generalError = null)
-            is LoginEvent.PasswordChanged -> uiState = uiState.copy(password = event.value, passwordError = null, generalError = null)
-            LoginEvent.LoginClicked -> {
-                println("Login Clicked: ${uiState.email}, ${uiState.password}")
-                var hasError = false
-                if (uiState.email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(uiState.email).matches()) { // Validación simple de email
-                    uiState = uiState.copy(emailError = "Correo inválido"); hasError = true
-                }
-                if (uiState.password.length < 6) { // Validación simple de contraseña
-                    uiState = uiState.copy(passwordError = "Contraseña muy corta (mín 6)"); hasError = true
-                }
-
-                if (!hasError) {
-                    uiState = uiState.copy(isLoading = true)
-                    scope.launch {
-                        delay(1500)
-                        uiState = uiState.copy(isLoading = false)
-                        // Simulación:
-                        if (uiState.email == "test@test.com") { onLoginSuccess() }
-                        else { uiState = uiState.copy(generalError = "Credenciales inválidas") }
-                    }
-                }
-            }
-            LoginEvent.GoogleSignInClicked -> {
-                println("Google Sign-In Clicked")
-                uiState = uiState.copy(generalError = "Google Sign-In no implementado")
-            }
-            LoginEvent.RegisterLinkClicked -> onNavigateToRegister()
-            LoginEvent.ForgotPasswordLinkClicked -> onNavigateToForgotPassword()
-            LoginEvent.GeneralErrorShown -> uiState = uiState.copy(generalError = null)
-        }
-    }
-    // --- Fin Sustitutos ---
-
+    // El resto del código de LoginScreen se mantiene igual que en la versión anterior...
+    // (Observar estado, obtener onEvent, LaunchedEffects, Scaffold, llamada a LoginContent)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val onEvent = viewModel::handleEvent
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // --- Efecto para mostrar errores ---
     LaunchedEffect(uiState.generalError) {
         uiState.generalError?.let { message ->
-            snackbarHostState.showSnackbar(message = message, duration = SnackbarDuration.Long) // Duración más larga para errores
+            snackbarHostState.showSnackbar(message = message, duration = SnackbarDuration.Long)
             onEvent(LoginEvent.GeneralErrorShown)
         }
     }
+
+    // --- ¡NUEVO! Efecto para manejar eventos de navegación ---
+    LaunchedEffect(Unit) { // Se lanza una sola vez
+        viewModel.navigationEvent.collectLatest { event -> // Escucha el SharedFlow
+            when (event) {
+                LoginNavigationEvent.NavigateToMainGraph -> {
+                    println("LoginScreen: Navegación a Main Graph recibida!")
+                    onLoginSuccess() // Llama a la lambda de navegación real
+                }
+                // Manejar otros posibles eventos de navegación aquí si los hubiera
+            }
+        }
+    }
+    // --- Fin Efecto de Navegación ---
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -110,19 +91,27 @@ fun LoginScreen(
         LoginContent(
             modifier = Modifier.padding(paddingValues),
             uiState = uiState,
-            onEvent = onEvent
+            onEvent = onEvent,
+            onRegisterClick = onNavigateToRegister,
+            onForgotPasswordClick = onNavigateToForgotPassword
         )
     }
 }
 
+/**
+ * Composable que define la UI del contenido de la pantalla de Login. (Sin cambios)
+ * (...) // KDoc anterior omitido
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeApi::class)
 @Composable
 fun LoginContent(
     modifier: Modifier = Modifier,
     uiState: LoginUiState,
-    onEvent: (LoginEvent) -> Unit
+    onEvent: (LoginEvent) -> Unit,
+    // Estos callbacks se disparan directamente desde la UI
+    onRegisterClick: () -> Unit,
+    onForgotPasswordClick: () -> Unit
 ) {
-    // Controladores para teclado y foco
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
@@ -132,22 +121,20 @@ fun LoginContent(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 32.dp, vertical = 48.dp), // Más padding
+                .padding(horizontal = 32.dp, vertical = 48.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. Logo o Título más prominente
-            // Puedes usar un Image si tienes un logo:
-            // Image(painter = painterResource(id = R.drawable.ic_logo), contentDescription = "Logo App", modifier = Modifier.size(100.dp))
+            // 1. Logo o Título
             Text(
                 text = "Bienvenido a TibiBalance",
-                style = MaterialTheme.typography.headlineMedium, // Un poco más pequeño que Large
+                style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
                 text = "Inicia sesión para continuar",
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant, // Color más suave
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 48.dp)
             )
 
@@ -159,17 +146,13 @@ fun LoginContent(
                 label = { Text("Correo Electrónico") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next // Acción "Siguiente" en el teclado
+                    imeAction = ImeAction.Next
                 ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) } // Mueve el foco al siguiente campo
-                ),
+                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 singleLine = true,
                 isError = uiState.emailError != null,
-                supportingText = {
-                    uiState.emailError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-                },
-                shape = MaterialTheme.shapes.medium // Bordes redondeados
+                supportingText = { uiState.emailError?.let { Text(it, color = MaterialTheme.colorScheme.error) } },
+                shape = MaterialTheme.shapes.medium
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -182,46 +165,42 @@ fun LoginContent(
                 label = { Text("Contraseña") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done // Acción "Listo" en el teclado
+                    imeAction = ImeAction.Done
                 ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        keyboardController?.hide() // Oculta el teclado
-                        onEvent(LoginEvent.LoginClicked) // Intenta hacer login
-                    }
-                ),
+                keyboardActions = KeyboardActions(onDone = {
+                    keyboardController?.hide()
+                    onEvent(LoginEvent.LoginClicked)
+                }),
                 singleLine = true,
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    val image = if (passwordVisible) Icons.Filled.Face else Icons.Filled.Info
+                    val image = if (passwordVisible) Icons.Filled.Face else Icons.Filled.Person
                     val description = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(imageVector = image, contentDescription = description)
+                        Icon(image, contentDescription = description)
                     }
                 },
                 isError = uiState.passwordError != null,
-                supportingText = {
-                    uiState.passwordError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-                },
-                shape = MaterialTheme.shapes.medium // Bordes redondeados
+                supportingText = { uiState.passwordError?.let { Text(it, color = MaterialTheme.colorScheme.error) } },
+                shape = MaterialTheme.shapes.medium
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            // 4. Enlace Olvidé Contraseña (TextButton es más accesible)
+            // 4. Enlace Olvidé Contraseña: Llama directamente a onForgotPasswordClick
             TextButton(
-                onClick = { onEvent(LoginEvent.ForgotPasswordLinkClicked) },
+                onClick = { onForgotPasswordClick() },
                 modifier = Modifier.align(Alignment.End),
-                contentPadding = PaddingValues(vertical = 4.dp) // Menos padding vertical
+                contentPadding = PaddingValues(vertical = 4.dp)
             ) {
                 Text("¿Olvidaste tu contraseña? Recupérala aquí")
             }
-            Spacer(modifier = Modifier.height(32.dp)) // Más espacio antes del botón principal
+            Spacer(modifier = Modifier.height(32.dp))
 
             // 5. Botón de Login
             StyledButton(
                 text = "Iniciar Sesión",
                 onClick = {
-                    keyboardController?.hide() // Ocultar teclado al hacer clic
+                    keyboardController?.hide()
                     onEvent(LoginEvent.LoginClicked)
                 },
                 enabled = !uiState.isLoading
@@ -234,17 +213,14 @@ fun LoginContent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                HorizontalDivider(
-                    modifier = Modifier.weight(1f),
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant
+                Divider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outlineVariant)
+                Text(
+                    " O ",
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Text(" O ", modifier = Modifier.padding(horizontal = 8.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                HorizontalDivider(
-                    modifier = Modifier.weight(1f),
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant
-                )
+                Divider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outlineVariant)
             }
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -256,45 +232,27 @@ fun LoginContent(
                 shape = MaterialTheme.shapes.medium,
                 border = ButtonDefaults.outlinedButtonBorder.copy(width = 1.dp)
             ) {
-                // Ícono de Google (requiere añadir el drawable ic_google_logo a res/drawable)
-                // try {
-                //     Icon(
-                //         painter = painterResource(id = R.drawable.ic_google_logo), // Asegúrate que este drawable exista
-                //         contentDescription = "Logo de Google",
-                //         modifier = Modifier.size(24.dp),
-                //         tint = Color.Unspecified // Para que no aplique el contentColor del botón
-                //     )
-                //     Spacer(modifier = Modifier.width(12.dp))
-                // } catch (e: Exception) {
-                //     // Manejar el caso si el drawable no existe
-                //     println("Error al cargar logo de Google: ${e.message}")
-                // }
-                Text("Continuar con Google", style = MaterialTheme.typography.labelLarge) // Texto un poco más grande
+                Text("Continuar con Google", style = MaterialTheme.typography.labelLarge)
             }
-            Spacer(modifier = Modifier.weight(1f)) // Empuja el siguiente elemento hacia abajo
+            Spacer(modifier = Modifier.weight(1f))
 
-            // 8. Enlace a Registro (Usando TextButton para claridad)
+            // 8. Enlace a Registro: Llama directamente a onRegisterClick
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("¿Aún no tienes cuenta?")
-                TextButton(onClick = { onEvent(LoginEvent.RegisterLinkClicked) }) {
-                    Text("Crea una") // El TextButton ya le da estilo de enlace
+                TextButton(onClick = { onRegisterClick() }) {
+                    Text("Crea una")
                 }
             }
         } // Fin Column
 
-        // Indicador de Carga superpuesto
+        // Indicador de Carga
         if (uiState.isLoading) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center) // Asegura que el Box esté centrado
-                // Fondo semi-transparente opcional
-                // .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
-                ,
+                modifier = Modifier.fillMaxSize().align(Alignment.Center),
                 contentAlignment = Alignment.Center
             ) {
                 LoadingIndicator()
@@ -304,25 +262,20 @@ fun LoginContent(
 }
 
 
+
 // --- Previews ---
 @Preview(showBackground = true, device = "id:pixel_6")
 @Composable
-fun LoginContentAttractivePreview() {
+fun LoginContentAttractivePreviewUpdated() { // Renombrado para evitar conflicto si mantienes el anterior
     TibiBalanceTheme {
         LoginContent(
             uiState = LoginUiState(email = "test@example.com"),
-            onEvent = {}
+            onEvent = {},
+            onRegisterClick = {},
+            onForgotPasswordClick = {}
         )
     }
 }
 
-@Preview(showBackground = true, device = "id:pixel_6")
-@Composable
-fun LoginContentAttractiveLoadingPreview() {
-    TibiBalanceTheme {
-        LoginContent(
-            uiState = LoginUiState(isLoading = true),
-            onEvent = {}
-        )
-    }
-}
+// ... otros previews ...
+

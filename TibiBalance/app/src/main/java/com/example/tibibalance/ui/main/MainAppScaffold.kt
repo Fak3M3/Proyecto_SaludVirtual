@@ -53,13 +53,13 @@ fun MainAppScaffoldPager(
                 title = { Text(currentTitle) }, // Título dinámico
                 // Puedes añadir acciones o un botón de menú aquí si es necesario
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer, // Ejemplo de color
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
         },
         bottomBar = {
-            // Barra inferior modificada para interactuar con el PagerState
+            // Barra inferior para interactuar con el PagerState
             NavigationBar {
                 mainPagerScreens.forEachIndexed { index, screen ->
                     val isSelected = pagerState.currentPage == index
@@ -97,7 +97,7 @@ fun MainAppScaffoldPager(
                 is Screen.MainScreen.Placeholder4 -> Placeholder4Screen(screenName = stringResource(id = screen.titleResId))
                 is Screen.MainScreen.Placeholder5 -> Placeholder5Screen(screenName = stringResource(id = screen.titleResId))
             }
-            // NOTA: Si estas pantallas necesitan navegar a pantallas de detalle
+            // NOTA para los de frontend: Si estas pantallas necesitan navegar a pantallas de detalle
             // (que NO están en el Pager), necesitarás pasarles el 'rootNavController'
             // y ellas llamarán a rootNavController.navigate(...)
         }

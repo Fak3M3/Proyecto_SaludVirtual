@@ -21,23 +21,5 @@ fun NavGraphBuilder.mainGraph(navController: NavHostController) {
             // Llama al Composable que contiene el Scaffold y el HorizontalPager
             MainAppScaffoldPager(rootNavController = navController)
         }
-        // --- Navegación a Detalles (Fuera del Pager) ---
-        // Si necesitas navegar a pantallas de detalle DESDE las pantallas del Pager,
-        // defines esas rutas aquí, al mismo nivel que "main_pager_content".
-        // El rootNavController se usaría para navegar a ellas.
-        // Ejemplo:
-        /*
-        composable(route = Screen.Settings.route) {
-             SettingsScreen(onNavigateBack = { navController.navigateUp() })
-        }
-        composable(
-             route = Screen.HabitDetail.route,
-             arguments = listOf(navArgument("habitId") { type = NavType.StringType })
-        ) { backStackEntry ->
-             val habitId = backStackEntry.arguments?.getString("habitId") ?: "ID_INVALIDO"
-             HabitDetailScreen(habitId = habitId, onNavigateBack = { navController.navigateUp() })
-        }
-        */
-        // --- Fin Navegación a Detalles ---
     }
 }

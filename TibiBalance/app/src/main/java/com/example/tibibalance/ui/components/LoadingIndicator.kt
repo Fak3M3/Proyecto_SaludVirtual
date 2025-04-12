@@ -22,23 +22,18 @@ fun LoadingIndicator(
     modifier: Modifier = Modifier
 ) {
     // Simplemente muestra el indicador de progreso circular de Material 3.
-    // El llamador puede usar el modifier para posicionarlo, por ejemplo:
-    // LoadingIndicator(modifier = Modifier.align(Alignment.Center))
+    // El llamador puede usar el modifier para posicionarlo
     CircularProgressIndicator(
-        modifier = modifier,
-        // Puedes personalizar el color si lo deseas:
-        // color = MaterialTheme.colorScheme.primary,
-        // strokeWidth = 4.dp // Grosor de la línea
+        modifier = modifier
     )
 }
 
-// Preview para visualizar el componente en Android Studio
+// Preview para visualizar el componente
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF) // Fondo blanco para ver mejor
 @Composable
 fun LoadingIndicatorPreview() {
     TibiBalanceTheme {
-        // Usamos un Box en el preview para centrarlo y darle tamaño,
-        // simulando cómo podría usarse.
+        // Usamos un Box en el preview para centrarlo y darle tamaño
         Box(
             modifier = Modifier.size(100.dp),
             contentAlignment = Alignment.Center

@@ -54,8 +54,6 @@ fun BottomNavigationBar(
                         onItemClick(screen.pageIndex) // <--- CAMBIO: Llama a onItemClick
                     }
                 }
-                // Opcional: Personalizar colores
-                // colors = NavigationBarItemDefaults.colors(...)
             )
         }
     }
