@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TibiBalance</string>
+    <string name="screen_title_dashboard">Dashboard</string>
+    <string name="screen_title_habits">Habits</string>
+    <string name="screen_title_profile">Profile</string>
+    <string name="screen_title_login">Login</string>
+    <string name="screen_title_register">Register</string>
+    <string name="screen_title_add_habit">Add Habit</string>
+</resources>
