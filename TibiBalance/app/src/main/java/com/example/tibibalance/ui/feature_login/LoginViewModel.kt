@@ -17,10 +17,7 @@ import kotlinx.coroutines.launch
  * - Interactuar con capas inferiores (Repositories/UseCases) - (Pendiente).
  */
 // @HiltViewModel // Descomentar si se usa Hilt
-class LoginViewModel /* @Inject constructor(
-    // private val loginUseCase: LoginUseCase, // Ejemplo de inyección de dependencia
-    // private val googleSignInUseCase: GoogleSignInUseCase
-) */ : ViewModel() {
+class LoginViewModel  : ViewModel() {
 
     // Flujo de estado mutable privado gestionado por el ViewModel.
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -94,12 +91,11 @@ class LoginViewModel /* @Inject constructor(
         var passwordError: String? = null
         var hasError = false
 
-        // --- Validaciones (Lógica que pertenece al ViewModel) ---
         if (currentState.email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(currentState.email).matches()) {
             emailError = "Correo inválido"
             hasError = true
         }
-        if (currentState.password.length < 6) { // Ejemplo: Mínimo 6 caracteres
+        if (currentState.password.length < 6) { // FALTA MODIFICAR LA REGEX PARA QUE SEA MÁS FUERTE LA CONTRASEÑA
             passwordError = "Contraseña muy corta (mín 6)"
             hasError = true
         }

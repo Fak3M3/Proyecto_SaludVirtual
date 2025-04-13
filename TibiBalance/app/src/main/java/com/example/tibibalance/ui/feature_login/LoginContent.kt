@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -153,9 +154,9 @@ fun LoginContent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.outlineVariant
+                    thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant
                 )
                 Text(
                     " O ",
@@ -163,9 +164,9 @@ fun LoginContent(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.outlineVariant
+                    thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
@@ -195,7 +196,7 @@ fun LoginContent(
             }
         } // Fin de Column
 
-        // Indicador de carga (por ejemplo, un LoadingIndicator central)
+        // Indicador de carga
         if (uiState.isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize().align(Alignment.Center),

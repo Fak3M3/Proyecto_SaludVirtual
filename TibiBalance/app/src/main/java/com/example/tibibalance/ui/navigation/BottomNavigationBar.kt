@@ -3,18 +3,10 @@ package com.example.tibibalance.ui.navigation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar // Material 3
 import androidx.compose.material3.NavigationBarItem
-// import androidx.compose.material3.NavigationBarItemDefaults // Para colores (opcional)
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-// import androidx.compose.runtime.getValue // Ya no se necesita currentBackStackEntryAsState
 import androidx.compose.ui.Modifier
-// import androidx.compose.ui.graphics.Color // Para colores (opcional)
 import androidx.compose.ui.res.stringResource
-// Ya no necesita NavController directamente para esta lógica
-// import androidx.navigation.NavController
-// import androidx.navigation.NavDestination.Companion.hierarchy
-// import androidx.navigation.NavGraph.Companion.findStartDestination
-// import androidx.navigation.compose.currentBackStackEntryAsState
 
 /**
  * Composable reutilizable que muestra la barra de navegación inferior,

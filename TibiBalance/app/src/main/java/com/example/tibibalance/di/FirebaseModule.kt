@@ -17,6 +17,12 @@ object FirebaseModule {
 
     /**
      * Provee una instancia singleton de FirebaseAuth.
+     * @return FirebaseAuth
+     * @see Provides
+     * @see Singleton
+     * @see InstallIn
+     * @see SingletonComponent
+     * @see Module
      */
     @Provides
     @Singleton

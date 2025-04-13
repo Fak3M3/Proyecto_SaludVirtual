@@ -19,12 +19,7 @@ data class RegisterUiState(
     val successMessage: String? = null
 )
 
-/**
- * Eventos que la UI envía para interactuar en el proceso de registro.
- */
-// --- ACTUALIZAR RegisterEvent ---
 sealed interface RegisterEvent {
-    // ... otros eventos ...
     data class UsernameChanged(val value: String) : RegisterEvent
     data class DobChanged(val value: String) : RegisterEvent
     data class EmailChanged(val value: String) : RegisterEvent

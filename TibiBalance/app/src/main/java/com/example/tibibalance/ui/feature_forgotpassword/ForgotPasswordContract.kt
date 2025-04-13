@@ -7,7 +7,7 @@ data class ForgotPasswordUiState(
     val email: String = "",
     val isLoading: Boolean = false,
     val emailError: String? = null,
-    val successMessage: String? = null, // Mensaje de éxito, por ejemplo, "Correo enviado..."
+    val successMessage: String? = null, // Mensaje de éxito
     val generalError: String? = null
 )
 

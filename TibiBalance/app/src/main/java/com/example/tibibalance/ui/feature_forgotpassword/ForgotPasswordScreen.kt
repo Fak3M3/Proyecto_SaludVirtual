@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 
 /**
  * Contenedor de la pantalla de Recuperar Contraseña.
- * Se encarga de observar el estado, lanzar efectos (por ejemplo, mostrar Snackbar) y
+ * Se encarga de observar el estado, lanzar efectos y
  * montar el contenido mediante ForgotPasswordContent.
  *
  * @param viewModel Por defecto se obtiene usando viewModel()

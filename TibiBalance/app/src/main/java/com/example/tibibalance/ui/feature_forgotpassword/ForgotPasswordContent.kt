@@ -1,5 +1,10 @@
 package com.example.tibibalance.ui.feature_forgotpassword
 
+/**
+ * NOTA: Falta implementar mediante hilth
+ * Archivo: ForgotPasswordContent.kt
+ *
+ */
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions

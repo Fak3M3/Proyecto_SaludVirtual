@@ -50,7 +50,6 @@ fun LoginScreen(
         viewModel.navigationEvent.collectLatest { event ->
             when (event) {
                 LoginNavigationEvent.NavigateToMainGraph -> onLoginSuccess()
-                // Puedes manejar otros eventos de navegación si fuese necesario
             }
         }
     }

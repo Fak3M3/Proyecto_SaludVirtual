@@ -27,7 +27,7 @@ sealed interface LoginEvent {
     object RegisterLinkClicked : LoginEvent
     object ForgotPasswordLinkClicked : LoginEvent
     object GeneralErrorShown : LoginEvent
-    // object NavigationCompleted : LoginEvent // Necesario si usas la Opción 1 (estado loginSuccess)
+    // object NavigationCompleted : LoginEvent
 }
 
 /**
@@ -36,6 +36,5 @@ sealed interface LoginEvent {
  */
 sealed interface LoginNavigationEvent {
     object NavigateToMainGraph : LoginNavigationEvent // Evento para indicar navegación exitosa
-    // Podrías añadir otros eventos de navegación si fueran necesarios desde este VM
 }
 

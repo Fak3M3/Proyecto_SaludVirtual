@@ -13,7 +13,7 @@ import com.example.tibibalance.ui.theme.TibiBalanceTheme // Asegúrate de import
 
 /**
  * Un Composable simple que muestra un indicador de progreso circular.
- * Ideal para mostrar mientras se cargan datos.
+ * Acepta un modificador opcional para personalizar el diseño.
  *
  * @param modifier Modificador opcional para personalizar el layout, tamaño, etc.
  */
@@ -29,7 +29,7 @@ fun LoadingIndicator(
 }
 
 // Preview para visualizar el componente
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF) // Fondo blanco para ver mejor
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF) // Fondo blanco
 @Composable
 fun LoadingIndicatorPreview() {
     TibiBalanceTheme {

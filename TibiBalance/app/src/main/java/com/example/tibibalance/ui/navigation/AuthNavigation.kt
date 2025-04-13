@@ -48,26 +48,29 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
 
         // --- Pantalla de Registro ---
         composable(route = Screen.Register.route) {
+            // La pantalla RegisterScreen obtiene su propio ViewModel internamente
+            // usando hiltViewModel() o viewModel(). NO se lo pasamos aquí.
             RegisterScreen(
                 onNavigateBack = {
                     Log.d("AuthNavigation", "Navegando atrás desde Registro")
                     navController.popBackStack()
                 },
-                // CAMBIO: Ahora la lambda onRegistrationSuccess debe navegar a VerifyEmail
-                onRegistrationSuccess = { // Esta lambda se llama cuando el ViewModel emite NavigateToVerifyEmail
+                // Para registro estándar -> va a verificar email
+                onRegistrationSuccess = {
                     Log.d("AuthNavigation", "Registro exitoso (email enviado). Navegando a ${Screen.VerifyEmail.route}")
-                    // Navega a la pantalla de verificación en lugar del grafo principal
                     navController.navigate(Screen.VerifyEmail.route) {
-                        // Opcional: podrías querer limpiar la pantalla de registro del backstack
                         popUpTo(Screen.Register.route) { inclusive = true }
-                        // O limpiar hasta Login si prefieres que "Ir a Login" desde VerifyEmail
-                        // no muestre Registro al volver atrás.
-                        // popUpTo(Screen.Login.route) { inclusive = false } // No borra Login
-                        launchSingleTop = true // Evita múltiples instancias de VerifyEmail
+                        launchSingleTop = true
+                    }
+                },
+                // Para Google Sign-In -> va directo al grafo principal
+                onGoogleSignInSuccess = {
+                    Log.d("AuthNavigation", "Google Sign-In exitoso. Navegando a ${Graph.MAIN}")
+                    navController.navigate(Graph.MAIN) {
+                        popUpTo(Graph.AUTHENTICATION) { inclusive = true } // Limpia todo el grafo de auth
                     }
                 }
-                // Nota: Asegúrate que el LaunchedEffect en RegisterScreen.kt maneje
-                // RegisterNavigationEvent.NavigateToVerifyEmail y llame a esta lambda onRegistrationSuccess.
+                // Ya no se pasa viewModel = ...
             )
         }
 
@@ -78,7 +81,6 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
                     Log.d("AuthNavigation", "Navegando atrás desde Olvidé Contraseña")
                     navController.popBackStack()
                 }
-                // Aquí podrías tener una lambda onPasswordResetEmailSent para navegar a Login o mostrar mensaje
             )
         }
 
@@ -88,7 +90,6 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
             VerifyEmailScreen(
                 onNavigateToLogin = {
                     Log.d("AuthNavigation", "Navegando desde VerifyEmail a ${Screen.Login.route}")
-                    // Navega a Login, limpiando todo el grafo de autenticación hasta ese punto
                     navController.navigate(Screen.Login.route) {
                         popUpTo(Graph.AUTHENTICATION) { inclusive = true }
                         launchSingleTop = true

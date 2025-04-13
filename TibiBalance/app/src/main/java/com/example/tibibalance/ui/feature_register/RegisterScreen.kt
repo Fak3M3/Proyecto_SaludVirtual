@@ -1,72 +1,166 @@
 package com.example.tibibalance.ui.feature_register
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-// import androidx.compose.material.icons.filled.ArrowBack // No necesario si usas AutoMirrored
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel // Importa hiltViewModel si es el que te funcionó
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-// import androidx.lifecycle.viewmodel.compose.viewModel // O viewModel si usas esa
+import kotlinx.coroutines.launch // Para lanzar corutinas
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialException
+import androidx.credentials.exceptions.NoCredentialException
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import kotlinx.coroutines.flow.collectLatest
-import android.util.Log // Para depuración
+import java.util.UUID
+// esto deberia estar en un archivo separado como variable de entorno
+private const val WEB_CLIENT_ID = "10018702573-ijotptlbt71c0s0rp06auolpviiiuon9.apps.googleusercontent.com"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
-    // Asegúrate de usar hiltViewModel() o viewModel() según lo que te funcionó antes
     viewModel: RegisterViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
-    // Esta lambda ahora será llamada cuando el ViewModel emita NavigateToVerifyEmail
-    onRegistrationSuccess: () -> Unit
+    onRegistrationSuccess: () -> Unit,
+    onGoogleSignInSuccess: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    val TAG = "RegisterScreen" // Tag para logs
+    val context = LocalContext.current
+    val TAG = "RegisterScreen"
+    // Scope de corutina para lanzar la petición de credenciales
+    val scope = rememberCoroutineScope()
 
-    // Efecto para mostrar errores o mensajes de éxito mediante Snackbar.
+    // --- Cliente de Credential Manager ---
+    val credentialManager = remember { CredentialManager.create(context) }
+
+    // --- Función para iniciar el flujo de Google Sign-In con Credential Manager ---
+    fun launchGoogleSignIn() {
+        // Generar un nonce aleatorio para seguridad (opcional pero recomendado)
+        val nonce = UUID.randomUUID().toString()
+        Log.d(TAG, "Generated nonce for Credential Manager: $nonce")
+
+        // 1. Construir la opción específica para Google ID Token
+        val googleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setServerClientId(WEB_CLIENT_ID)
+            .setAutoSelectEnabled(true) // o false, según el comportamiento que desees
+            .build()
+
+        // 2. Construir la petición general de credenciales añadiendo la opción de Google
+        val credentialRequest = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption) // Añade la opción de Google
+            .build()
+
+        // 3. Lanzar la petición usando una corutina
+        scope.launch {
+            try {
+                Log.d(TAG, "Calling credentialManager.getCredential...")
+                // Solicitar la credencial (esto puede mostrar la UI de One Tap)
+                val result: GetCredentialResponse = credentialManager.getCredential(
+                    context, // Puedes pasar tu Activity aquí
+                    credentialRequest
+                )
+
+
+                // Obtener la credencial del resultado
+                val credential = result.credential
+                Log.d(TAG, "getCredential successful, credential type: ${credential.type}")
+
+                // Verificar si es la credencial de Google que esperamos
+                if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                    // Extraer el ID Token del Bundle de datos
+                    val idToken = GoogleIdTokenCredential.createFrom(credential.data).idToken
+                    Log.d(TAG, "Google ID Token extracted: ${idToken != null}")
+                    if (idToken != null) {
+                        // Enviar el token al ViewModel
+                        viewModel.handleEvent(RegisterEvent.GoogleIdTokenReceived(idToken))
+                    } else {
+                        Log.e(TAG, "Credential Manager success but idToken is null")
+                        viewModel.handleEvent(RegisterEvent.GoogleIdTokenReceived(null))
+                    }
+                } else {
+                    // Se recibió otro tipo de credencial inesperado
+                    Log.e(TAG, "Received unexpected credential type: ${credential.type}")
+                    viewModel.handleEvent(RegisterEvent.GoogleIdTokenReceived(null))
+                }
+
+            } catch (e: GetCredentialException) {
+                // Manejar errores específicos de Credential Manager
+                Log.e(TAG, "getCredential failed", e)
+                when (e) {
+                    is NoCredentialException -> {
+                        Log.w(TAG, "No credentials available.")
+                        // Informar al usuario que no se encontraron cuentas o necesita configurar una
+                    }
+                    else -> {
+                        Log.e(TAG, "Unexpected GetCredentialException", e)
+                    }
+                }
+                viewModel.handleEvent(RegisterEvent.GoogleIdTokenReceived(null)) // Informa fallo
+            } catch (e: Exception) {
+                // Captura otros errores inesperados
+                Log.e(TAG, "Unexpected error during getCredential", e)
+                viewModel.handleEvent(RegisterEvent.GoogleIdTokenReceived(null))
+            }
+        }
+    }
+
+
+    // --- Efectos ---
+
+    // Efecto para mostrar Snackbar (sin cambios)
     LaunchedEffect(uiState.generalError, uiState.successMessage) {
-        // Usamos uiState.message si lo centralizas, o mantenemos la lógica actual
         val message = uiState.generalError ?: uiState.successMessage
         message?.let {
             Log.d(TAG, "Mostrando Snackbar: $it")
             snackbarHostState.showSnackbar(message = it, duration = SnackbarDuration.Long)
-            viewModel.handleEvent(RegisterEvent.MessageShown) // Limpia el mensaje después de mostrarlo
+            viewModel.handleEvent(RegisterEvent.MessageShown)
         }
     }
 
-    // Efecto para escuchar los eventos de navegación.
-    // ¡AQUÍ ESTABA EL PROBLEMA!
+    // Efecto para manejar eventos de Navegación (sin cambios)
     LaunchedEffect(Unit) {
         Log.d(TAG, "Iniciando colector de navigationEvent")
         viewModel.navigationEvent.collectLatest { event ->
             Log.d(TAG, "Evento de navegación recibido: $event")
             when (event) {
-                // --- CORRECCIÓN ---
-                // Cuando el ViewModel indica éxito y que se envió el correo,
-                // llamamos a la lambda onRegistrationSuccess que nos pasaron.
-                // Esta lambda (definida en AuthNavigation.kt) se encargará
-                // de realizar la navegación real a Screen.VerifyEmail.route.
                 RegisterNavigationEvent.NavigateToVerifyEmail -> {
                     Log.d(TAG, "Manejando NavigateToVerifyEmail: llamando a onRegistrationSuccess()")
-                    onRegistrationSuccess() // <-- REEMPLAZA EL TODO() CON ESTO
+                    onRegistrationSuccess()
                 }
-                // Este caso podría ya no ser necesario si Google Sign-In también
-                // usa su propia lambda o si se maneja de otra forma.
-                // Por ahora lo dejamos por si acaso.
                 RegisterNavigationEvent.NavigateToMainGraph -> {
-                    Log.w(TAG,"Recibido NavigateToMainGraph, pero el flujo normal va a VerifyEmail. ¿Es de Google Sign-In?")
-                    // Si Google Sign-In usa la misma lambda onRegistrationSuccess, necesitarás
-                    // diferenciar o pasar lambdas separadas. Asumamos que onRegistrationSuccess
-                    // es solo para el registro estándar por ahora.
-                    // Considera añadir una lambda separada para Google Sign-In si es necesario.
+                    Log.d(TAG, "Manejando NavigateToMainGraph: llamando a onGoogleSignInSuccess()")
+                    onGoogleSignInSuccess()
                 }
             }
         }
     }
 
+    // Efecto para manejar efectos de Vista (lanzar Google Sign-In)
+    LaunchedEffect(Unit) {
+        Log.d(TAG, "Iniciando colector de viewEffect")
+        viewModel.viewEffect.collectLatest { effect ->
+            Log.d(TAG, "Efecto de vista recibido: $effect")
+            when (effect) {
+                RegisterViewEffect.LaunchGoogleSignIn -> {
+                    Log.d(TAG, "Recibido LaunchGoogleSignIn effect, llamando a launchGoogleSignIn()...")
+                    // Llama a la nueva función que usa Credential Manager
+                    launchGoogleSignIn()
+                }
+            }
+        }
+    }
+
+    // --- UI ---
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
@@ -74,10 +168,7 @@ fun RegisterScreen(
                 title = { Text("Crear Cuenta") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Volver atrás"
-                        )
+                        Icon(AutoMirrored.Filled.ArrowBack, "Volver atrás")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -87,7 +178,6 @@ fun RegisterScreen(
             )
         }
     ) { paddingValues ->
-        // Asume que RegisterContent existe y funciona como antes
         RegisterContent(
             modifier = Modifier.padding(paddingValues),
             uiState = uiState,
@@ -95,3 +185,5 @@ fun RegisterScreen(
         )
     }
 }
+
+// Ya no se necesita la función auxiliar getGoogleSignInClient ni buildOneTapRequest

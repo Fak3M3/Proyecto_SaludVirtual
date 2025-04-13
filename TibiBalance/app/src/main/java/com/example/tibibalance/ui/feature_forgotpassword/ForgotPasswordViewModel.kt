@@ -7,6 +7,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+/**
+ * Archivo: ForgotPasswordViewModel.kt
+ * Clase: ForgotPasswordViewModel
+ * Descripción: ViewModel para la pantalla de Recuperar Contraseña.
+ */
 class ForgotPasswordViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(ForgotPasswordUiState())
