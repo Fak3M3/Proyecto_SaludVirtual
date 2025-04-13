@@ -16,17 +16,16 @@ object Graph {
 // Clase sellada para todas las posibles pantallas/destinos
 sealed class Screen(val route: String) {
 
-    // --- Destinos del Grafo de Autenticación (sin cambios) ---
+    // --- Destinos del Grafo de Autenticación (Añadido VerifyEmail) ---
     object Login : Screen("login")
     object Register : Screen("register")
     object ForgotPassword : Screen("forgot_password")
+    object VerifyEmail : Screen("verify_email") // <-- NUEVA RUTA AÑADIDA
 
-    // --- Destinos Principales (AHORA SON LOS 5 PLACEHOLDERS) ---
-    // Usaremos estos para la BottomNavBar y el Pager.
-    // La 'route' puede ser simple si no usamos NavHost aquí.
+    // --- Destinos Principales (Sin cambios) ---
     sealed class MainScreen(
-        val pageIndex: Int, // Índice para el Pager
-        route: String, // Mantenemos una ruta por si se necesita referenciar
+        val pageIndex: Int,
+        route: String,
         @StringRes val titleResId: Int,
         val icon: ImageVector
     ) : Screen(route) {
@@ -35,11 +34,9 @@ sealed class Screen(val route: String) {
         object Placeholder3 : MainScreen(2, "placeholder3", R.string.screen_title_placeholder3, Icons.Filled.Person)
         object Placeholder4 : MainScreen(3, "placeholder4", R.string.screen_title_placeholder4, Icons.Filled.PlayArrow)
         object Placeholder5 : MainScreen(4, "placeholder5", R.string.screen_title_placeholder5, Icons.Filled.Settings)
-        // Asegúrate de tener R.string.screen_title_placeholderX en strings.xml
-        // y los iconos Icons.Filled.Looks... o los que prefieras.
     }
 
-    // --- Destinos de Detalle/Secundarios (sin cambios) ---
+    // --- Destinos de Detalle/Secundarios (Sin cambios) ---
     object HabitDetail : Screen("habit_detail/{habitId}") {
         fun createRoute(habitId: String) = "habit_detail/$habitId"
     }
@@ -48,7 +45,7 @@ sealed class Screen(val route: String) {
 
 }
 
-// Lista actualizada para la barra inferior y el Pager
+// Lista para la barra inferior y el Pager (Sin cambios)
 val mainPagerScreens = listOf(
     Screen.MainScreen.Placeholder1,
     Screen.MainScreen.Placeholder2,

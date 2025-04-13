@@ -3,7 +3,12 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrainsKotlinSerialization)
+    id("com.google.gms.google-services")
+    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
 }
+
+
 
 android {
     namespace = "com.example.tibibalance"
@@ -41,6 +46,10 @@ android {
 }
 
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.core.ktx)
@@ -58,4 +67,25 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation("com.google.dagger:hilt-android:2.56.1") // Usa la misma versión que el plugin
+
+    // Elige UNA de las siguientes opciones (correspondiente al plugin elegido):
+    // Opción 1: Procesador de anotaciones con KSP
+    ksp("com.google.dagger:hilt-compiler:2.56.1")
+    // Opción 2: Procesador de anotaciones con KAPT
+    // kapt("com.google.dagger:hilt-compiler:2.51.1")
+
+    // (Opcional pero recomendado) Para inyección en ViewModels de Jetpack (ya lo tenías implícito con HiltViewModel)
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0") // Para integración con Navigation Compose
+    // --- FIN DE DEPENDENCIAS DE HILT ---
+
+    // ... resto de tus dependencias ...
+    implementation(platform("com.google.firebase:firebase-bom:33.1.1")) // Actualicé la versión del BOM aquí
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3") // Asegúrate de tener esta para .await()
+    implementation(libs.androidx.navigation.compose)
+    // ... etc ...
 }

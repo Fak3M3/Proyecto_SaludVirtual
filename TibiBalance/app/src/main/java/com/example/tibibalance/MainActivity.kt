@@ -12,13 +12,15 @@ import com.example.tibibalance.ui.navigation.Graph // Importa las rutas de Grafo
 import com.example.tibibalance.ui.navigation.authGraph // Importa la función del grafo de Auth
 import com.example.tibibalance.ui.navigation.mainGraph // Importa la función del grafo Principal
 import com.example.tibibalance.ui.theme.TibiBalanceTheme
+import dagger.hilt.android.AndroidEntryPoint
+
 // import dagger.hilt.android.AndroidEntryPoint // Si usas Hilt
 
 /**
  * Actividad principal de la aplicación.
  * Configura el tema y el grafo de navegación raíz.
  */
-// @AndroidEntryPoint // Descomenta si usas Hilt
+@AndroidEntryPoint // Descomenta si usas Hilt
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

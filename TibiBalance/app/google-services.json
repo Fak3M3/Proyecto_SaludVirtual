@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "10018702573-44fgo500sj235a7l1gbbbrcekv6kemkh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tibibalance",
+            "certificate_hash": "3bf9045fb12d4088552be97c23375b4438ff407e"
+          }
+        },
+        {
           "client_id": "10018702573-ijotptlbt71c0s0rp06auolpviiiuon9.apps.googleusercontent.com",
           "client_type": 3
         }
