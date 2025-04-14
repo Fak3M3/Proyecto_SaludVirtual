@@ -11,7 +11,7 @@ data class LoginUiState(
     val isLoading: Boolean = false,
     val emailError: String? = null,
     val passwordError: String? = null,
-    val generalError: String? = null
+    var generalError: String? = null
     // Podrías añadir aquí 'val loginSuccess: Boolean = false' (Opción 1 comentada en VM)
 )
 

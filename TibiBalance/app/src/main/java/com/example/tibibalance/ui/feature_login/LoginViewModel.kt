@@ -2,9 +2,12 @@ package com.example.tibibalance.ui.feature_login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.* // Importa SharedFlow y related
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+
 // import dagger.hilt.android.lifecycle.HiltViewModel // Descomentar si se usa Hilt
 // import javax.inject.Inject // Descomentar si se usa Hilt
 
@@ -19,6 +22,14 @@ import kotlinx.coroutines.launch
 // @HiltViewModel // Descomentar si se usa Hilt
 class LoginViewModel  : ViewModel() {
 
+    sealed class UiEvent {
+        object LaunchGoogleSignIn : UiEvent()
+    }
+
+    // Para el inicio de sesión utilizando Google.
+    private val _uiEvents = MutableSharedFlow<UiEvent>()
+    val uiEvents: SharedFlow<UiEvent> = _uiEvents
+
     // Flujo de estado mutable privado gestionado por el ViewModel.
     private val _uiState = MutableStateFlow(LoginUiState())
     // Flujo de estado público inmutable expuesto a la UI.
@@ -28,6 +39,13 @@ class LoginViewModel  : ViewModel() {
     private val _navigationEvent = MutableSharedFlow<LoginNavigationEvent>()
     val navigationEvent: SharedFlow<LoginNavigationEvent> = _navigationEvent.asSharedFlow()
     // --- Fin Canal ---
+
+    // Variables para rastrear intentos fallidos y bloqueos (por email)
+    private val failedAttemptsMap = mutableMapOf<String, Int>()
+    private val lockoutTimestampsMap = mutableMapOf<String, Long>()
+
+    private val LOCKOUT_DURATION_MS = 5 * 60 * 1000L // 5 minutos de bloqueo.
+    private val MAX_FAILED_ATTEMPTS = 3 // Intentos fallidos.
 
     init {
         println("DEBUG_VM: LoginViewModel CREADO") // Log de inicialización
@@ -61,10 +79,9 @@ class LoginViewModel  : ViewModel() {
                 processLogin()
             }
             LoginEvent.GoogleSignInClicked -> {
-                // TODO: Implementar lógica de inicio de sesión con Google.
-                println("ViewModel: Google Sign-In Clicked (Lógica pendiente)")
-                // Actualiza el estado para mostrar un mensaje temporal o manejar el inicio del flujo
-                _uiState.update { it.copy(generalError = "Google Sign-In no implementado") }
+                viewModelScope.launch {
+                    _uiEvents.emit(UiEvent.LaunchGoogleSignIn)
+                }
             }
             // Los eventos de navegación pura (clic en enlaces) son manejados directamente por la UI
             // llamando a las lambdas de navegación (onNavigateToRegister, etc.).
@@ -87,54 +104,102 @@ class LoginViewModel  : ViewModel() {
      */
     private fun processLogin() {
         val currentState = _uiState.value
+        val email = currentState.email.trim()
+        val password = currentState.password
+
         var emailError: String? = null
         var passwordError: String? = null
         var hasError = false
 
-        if (currentState.email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(currentState.email).matches()) {
+        if (email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailError = "Correo inválido"
             hasError = true
         }
-        if (currentState.password.length < 6) { // FALTA MODIFICAR LA REGEX PARA QUE SEA MÁS FUERTE LA CONTRASEÑA
-            passwordError = "Contraseña muy corta (mín 6)"
+
+        if (password.length < 8) {
+            passwordError = "Contraseña muy corta (mínimo 8 caracteres)"
             hasError = true
         }
-        // --- Fin Validaciones ---
 
-        // Actualiza el estado con los errores de validación (si los hay) ANTES de continuar
-        _uiState.update { it.copy(emailError = emailError, passwordError = passwordError) }
+        _uiState.update {
+            it.copy(emailError = emailError, passwordError = passwordError)
+        }
 
-        // Si no hay errores de validación, procede con la simulación de login
-        if (!hasError) {
-            _uiState.update { it.copy(isLoading = true, generalError = null) } // Inicia carga
-            println("DEBUG_VM: Iniciando proceso de login simulado...") // Log
+        if (hasError) return
 
-            viewModelScope.launch {
-                delay(1500) // Simula la llamada de red/backend
+        // Verificar si está bloqueado
+        val lockoutTime = lockoutTimestampsMap[email]
+        val currentTime = System.currentTimeMillis()
 
-                // --- Lógica de Autenticación Simulada ---
-                val loginExitosoSimulado = true // <-- Puesto en true para probar
-                // --- Fin Simulación ---
-
-                println("DEBUG_VM: Simulación de backend terminada. Éxito: $loginExitosoSimulado") // Log
-
-                _uiState.update { it.copy(isLoading = false) } // Quita el loading en ambos casos
-
-                if (loginExitosoSimulado) {
-                    // --- ¡ACCIÓN CLAVE! Emitir evento de navegación ---
-                    println("DEBUG_VM: Emitiendo evento NavigateToMainGraph") // Log
-                    _navigationEvent.emit(LoginNavigationEvent.NavigateToMainGraph)
-                    // --- Fin Acción Clave ---
-                } else {
-                    // Simula error de credenciales
-                    _uiState.update {
-                        it.copy(generalError = "Simulación: Credenciales inválidas o error de red.")
-                    }
-                    println("DEBUG_VM: Estado actualizado con error general") // Log
-                }
+        if (lockoutTime != null && currentTime < lockoutTime) {
+            val remaining = ((lockoutTime - currentTime) / 1000)
+            _uiState.update {
+                it.copy(generalError = "Cuenta bloqueada. Intenta de nuevo en ${remaining}s")
             }
-        } else {
-            println("DEBUG_VM: Login no procesado debido a errores de validación.") // Log
+            return
+        }
+
+        _uiState.update { it.copy(isLoading = true, generalError = null) }
+
+        viewModelScope.launch {
+            try {
+                val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
+                val result = auth.signInWithEmailAndPassword(email, password).await()
+
+                val user = result.user
+                if (user != null && user.isEmailVerified) {
+                    // Resetear intentos fallidos en login exitoso
+                    failedAttemptsMap[email] = 0
+                    lockoutTimestampsMap.remove(email)
+
+                    _navigationEvent.emit(LoginNavigationEvent.NavigateToMainGraph)
+                } else {
+                    auth.signOut()
+                    _uiState.update {
+                        it.copy(generalError = "Correo no verificado.")
+                    }
+                }
+            } catch (e: Exception) {
+                // --- Incrementar intentos fallidos ---
+                val currentFails = failedAttemptsMap.getOrDefault(email, 0) + 1
+                failedAttemptsMap[email] = currentFails
+
+                // Si supera el límite, bloquear por 5 minutos
+                if (currentFails >= MAX_FAILED_ATTEMPTS) {
+                    lockoutTimestampsMap[email] = System.currentTimeMillis() + LOCKOUT_DURATION_MS
+                }
+
+                val errorMsg = when (e) {
+                    is com.google.firebase.auth.FirebaseAuthInvalidUserException -> "Usuario no registrado"
+                    is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> "Contraseña incorrecta"
+                    else -> "Error al iniciar sesión: ${e.localizedMessage}"
+                }
+
+                _uiState.update {
+                    it.copy(generalError = errorMsg)
+                }
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
         }
     }
+
+    fun signInWithGoogleCredential(credential: AuthCredential) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            try {
+                val result = FirebaseAuth.getInstance().signInWithCredential(credential).await()
+                if (result.user != null) {
+                    _navigationEvent.emit(LoginNavigationEvent.NavigateToMainGraph)
+                } else {
+                    _uiState.update { it.copy(generalError = "No se pudo autenticar con Google") }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(generalError = "Error con Google Sign-In: ${e.message}") }
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
 }
