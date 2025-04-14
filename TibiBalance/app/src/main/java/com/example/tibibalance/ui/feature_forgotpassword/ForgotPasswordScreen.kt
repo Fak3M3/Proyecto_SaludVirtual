@@ -2,17 +2,13 @@ package com.example.tibibalance.ui.feature_forgotpassword
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.flow.collectLatest
 import com.example.tibibalance.ui.theme.TibiBalanceTheme
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.Icons
-import androidx.compose.runtime.remember
 
 /**
  * Contenedor de la pantalla de Recuperar Contraseña.
@@ -31,11 +27,14 @@ fun ForgotPasswordScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Efecto para mostrar mensajes (error o éxito)
+    // Efecto para mostrar errores o mensajes de éxito
     LaunchedEffect(uiState.generalError, uiState.successMessage) {
         val message = uiState.generalError ?: uiState.successMessage
         message?.let {
-            snackbarHostState.showSnackbar(message = it, duration = SnackbarDuration.Long)
+            snackbarHostState.showSnackbar(
+                message = it,
+                duration = SnackbarDuration.Long
+            )
             viewModel.handleEvent(ForgotPasswordEvent.MessageShown)
         }
     }
