@@ -79,7 +79,7 @@ fun RegisterContent(
                 contentDescription = "Imagen de registro",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(240.dp) // Altura de RegisterScreen
+                    .height(200.dp)
                     .background(Color(0xFFD5EDFD)) // Fondo imagen
                     .padding(bottom = 0.dp), // Sin padding si el formulario va justo debajo
                 contentScale = ContentScale.Crop // O el que prefieras

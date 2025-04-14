@@ -13,6 +13,7 @@ import com.example.tibibalance.ui.theme.TibiBalanceTheme
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 
 /**
  * Contenedor de la pantalla de Recuperar Contraseña.
@@ -54,8 +55,10 @@ fun ForgotPasswordScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface
+                    containerColor = Color.White, // Fondo de la barra a blanco
+                    scrolledContainerColor = Color.White, // Fondo al hacer scroll a blanco
+                    titleContentColor = Color.Black, // Color del texto del título a negro
+                    navigationIconContentColor = Color.Black // Color del ícono de navegación a negro
                 )
             )
         }
