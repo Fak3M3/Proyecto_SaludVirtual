@@ -7,6 +7,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -172,8 +173,10 @@ fun RegisterScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface
+                    containerColor = Color.White, // Fondo de la barra a blanco
+                    scrolledContainerColor = Color.White, // Fondo al hacer scroll a blanco
+                    titleContentColor = Color.Black, // Color del texto del título a negro
+                    navigationIconContentColor = Color.Black // Color del ícono de navegación a negro
                 )
             )
         }

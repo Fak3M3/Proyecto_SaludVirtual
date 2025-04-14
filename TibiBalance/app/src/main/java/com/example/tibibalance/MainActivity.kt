@@ -46,7 +46,6 @@ fun RootNavigationGraphSimplified() {
     NavHost(
         navController = navController,
         route = Graph.ROOT, // Identificador para este NavHost raíz
-        // ¡IMPORTANTE! Fija el inicio directamente en el grafo de autenticación.
         startDestination = Graph.AUTHENTICATION
     ) {
         // Define los grafos anidados. Aunque empecemos en Auth,
@@ -56,7 +55,6 @@ fun RootNavigationGraphSimplified() {
     }
 }
 
-// Preview simple para esta versión simplificada
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreviewSimplified() {

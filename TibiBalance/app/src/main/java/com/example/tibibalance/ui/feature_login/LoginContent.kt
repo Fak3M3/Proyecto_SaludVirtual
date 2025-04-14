@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tibibalance.ui.components.LoadingIndicator
 import com.example.tibibalance.ui.components.StyledButton
@@ -206,4 +207,26 @@ fun LoginContent(
             }
         }
     } // Fin de Box principal
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginContentPreview() {
+    // Estado dummy para la preview
+    val dummyState = LoginUiState(
+        email = "",
+        emailError = null,
+        password = "",
+        passwordError = null,
+        isLoading = false
+    )
+
+    TibiBalanceTheme {
+        LoginContent(
+            uiState = dummyState,
+            onEvent = {},
+            onRegisterClick = {},
+            onForgotPasswordClick = {}
+        )
+    }
 }

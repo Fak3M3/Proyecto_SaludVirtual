@@ -2,6 +2,7 @@ package com.example.tibibalance.ui.main
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi // Necesario para Pager
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,7 @@ import com.example.tibibalance.ui.feature_placeholder3.PlaceholderScreen3 as Pla
 import com.example.tibibalance.ui.feature_placeholder4.PlaceholderScreen4 as Placeholder4Screen
 import com.example.tibibalance.ui.feature_placeholder5.PlaceholderScreen5 as Placeholder5Screen
 import kotlinx.coroutines.launch // Para lanzar la animación del Pager
+import androidx.compose.ui.graphics.Color
 
 /**
  * Scaffold principal que utiliza HorizontalPager para la navegación
@@ -50,12 +52,8 @@ fun MainAppScaffoldPager(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(currentTitle) }, // Título dinámico
-                // Puedes añadir acciones o un botón de menú aquí si es necesario
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                title = { Text(currentTitle) },
+
             )
         },
         bottomBar = {
