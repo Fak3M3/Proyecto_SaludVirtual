@@ -3,16 +3,16 @@ package com.example.tibibalance.ui.feature_forgotpassword
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
-/**
- * Archivo: ForgotPasswordViewModel.kt
- * Clase: ForgotPasswordViewModel
- * Descripción: ViewModel para la pantalla de Recuperar Contraseña.
- */
-class ForgotPasswordViewModel : ViewModel() {
+class ForgotPasswordViewModel(
+    private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ForgotPasswordUiState())
     val uiState: StateFlow<ForgotPasswordUiState> = _uiState.asStateFlow()
@@ -29,7 +29,9 @@ class ForgotPasswordViewModel : ViewModel() {
                     )
                 }
             }
+
             ForgotPasswordEvent.SendButtonClicked -> processSendEmail()
+
             ForgotPasswordEvent.MessageShown -> {
                 _uiState.update {
                     it.copy(generalError = null, successMessage = null)
@@ -40,25 +42,42 @@ class ForgotPasswordViewModel : ViewModel() {
 
     private fun processSendEmail() {
         val currentState = _uiState.value
-        var hasError = false
+        val email = currentState.email
 
-        if (currentState.email.isBlank() ||
-            !Patterns.EMAIL_ADDRESS.matcher(currentState.email).matches()
-        ) {
-            _uiState.update { it.copy(emailError = "Correo inválido") }
-            hasError = true
+        // Validación de formato de email
+        if (email.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            _uiState.update { it.copy(emailError = "Formato de correo no válido") }
+            return
         }
-        if (hasError) return
 
         _uiState.update { it.copy(isLoading = true) }
+
         viewModelScope.launch {
-            delay(1500) // Simula la llamada al backend
-            _uiState.update { it.copy(isLoading = false) }
-            // Para simular, podemos decidir:
-            if (currentState.email.contains("error", ignoreCase = true)) {
-                _uiState.update { it.copy(generalError = "Simulación: Error al enviar correo.") }
-            } else {
-                _uiState.update { it.copy(successMessage = "Correo enviado. Revisa tu bandeja de entrada.") }
+            try {
+                firebaseAuth.sendPasswordResetEmail(email).await()
+
+                // Si no lanza excepción, fue exitoso
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        successMessage = "Correo enviado. Revisa tu bandeja de entrada."
+                    )
+                }
+
+            } catch (e: Exception) {
+                // Manejo de errores específicos
+                val errorMessage = when (e) {
+                    is FirebaseAuthInvalidUserException -> "Cuenta no encontrada"
+                    is FirebaseNetworkException -> "Sin conexión. Verifica tu red e inténtalo nuevamente."
+                    else -> "Error inesperado."
+                }
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        generalError = errorMessage
+                    )
+                }
             }
         }
     }
