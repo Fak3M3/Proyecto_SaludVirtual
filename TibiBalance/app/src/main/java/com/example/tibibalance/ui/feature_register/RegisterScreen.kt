@@ -23,7 +23,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import kotlinx.coroutines.flow.collectLatest
 import java.util.UUID
 // esto deberia estar en un archivo separado como variable de entorno
-private const val WEB_CLIENT_ID = "10018702573-ijotptlbt71c0s0rp06auolpviiiuon9.apps.googleusercontent.com"
+private const val WEB_CLIENT_ID = "467927540157-tvu0re0msga2o01tsj9t1r1o6kqvek3j.apps.googleusercontent.com"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
