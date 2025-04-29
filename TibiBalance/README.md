@@ -170,41 +170,47 @@ Componentes para mostrar texto con estilos consistentes.
 * **Parámetros clave**: `text: String`, `modifier: Modifier`, `severity: AlertSeverity` (Enum: Error, Warning, Info, Success), `icon: @Composable (() -> Unit)?`.
 * **Recomendación**: Estilo (color, icono) debe depender del `severity`.
 
-## F. Orden de Desarrollo Sugerido (NUEVA SECCIÓN)
+## F. Orden de Desarrollo
 
-Priorización para la implementación de los componentes.
+### Día 1: Fundamentales y Preview de `FeatureLaunchScreen`
+* **Objetivo**: Construir los bloques UI más básicos y permitir la previsualización de la pantalla inicial (`FeatureLaunchScreen`).
+* **Componentes (en orden de prioridad):**
+    1.  **Text (`Title`, `Subtitle`, `Caption`, `Description`) (27)**: Indispensable para cualquier texto. Implementar usando `MaterialTheme.typography`.
+    2.  **`IconContainer` (21)**: Necesario para iconos.
+    3.  **`PrimaryButton` (1)**: Requerido para `FeatureLaunchScreen`.
+    4.  **`SecondaryButton` (2)**: Requerido para `FeatureLaunchScreen`.
+    5.  **`ImageContainer` (19)**: Requerido para `FeatureLaunchScreen` y Auth. Configurar con librería (Coil/Glide).
 
-### Primeros a Desarrollar (Fundamentales y Bloques Básicos)
+### Día 2: Componentes de Autenticación y Preview de `AuthScreens`
+* **Objetivo**: Añadir componentes de formulario y estructura para permitir la previsualización de pantallas como `LoginFeatureScreen`, `RegisterFeatureScreen`, etc.
+* **Componentes (en orden de prioridad):**
+    6.  **`InputText` (8)**: Base para campos de texto de formularios.
+    7.  **`FormContainer` (7)**: Para agrupar campos en formularios de Auth.
+    8.  **`Header` (14)**: Estructura superior para pantallas de Auth.
+    9.  **`GoogleSignButton` (4)**: Botón específico de Auth.
+    10. **`Alert` (28)**: Para mostrar errores de validación en formularios.
+    11. **`InputEmail` (11)**: Configuración de `InputText` para email.
+    12. **`InputPassword` (12)**: Configuración de `InputText` para contraseña.
 
-1.  **Text (`Title`, `Subtitle`, `Caption`, `Description`)**: Base para casi todo. Implementar usando `MaterialTheme.typography`.
-2.  **`IconContainer`**: Necesario para botones y otros componentes.
-3.  **Botones Básicos (`PrimaryButton`, `SecondaryButton`, `CloseIconButton`, `GoogleSignButton`, `RoundedIconButton`)**: Acciones fundamentales.
-4.  **`InputText`**: Base para la mayoría de los campos de formulario.
-5.  **`ImageContainer`**: Esencial si se manejan imágenes de perfil o iconos personalizados pronto.
-6.  **`FormContainer`**: Para empezar a estructurar formularios.
-7.  **`Switch`**: Control de formulario común.
-8.  **`ProgressBar`**: Indicador visual útil en varias partes.
-9.  **`Alert`**: Para mostrar retroalimentación básica al usuario.
-
-### Desarrollo Intermedio (Componentes de Estructura y Formularios Específicos)
-
-10. **`Header`**: Estructura básica de pantalla.
-11. **`BottomNavBar`**: Navegación principal (si aplica).
-12. **`InputEmail`, `InputPassword`**: Especializaciones de `InputText`.
-13. **`InputDate`**: Requiere integración con `DatePickerDialog`.
-14. **`InputSelect`**: Requiere manejo de menú desplegable.
-15. **`DangerButton`, `GoogleSignButton`**: Botones con usos más específicos.
-16. **`StatContainer`**: Presentación simple de datos.
-17. **`Modal` (con `ModalCloseButton`, `ModalHeader`)**: Para diálogos y hojas inferiores.
-
-### Últimos a Desarrollar (Componentes Complejos, Específicos o Dependientes de Librerías)
-
-18. **`ProfileContainer`**: Agrupa varios componentes ya hechos.
-19. **`HabitContainer`**: Específico de la lógica de hábitos, usa otros componentes.
-20. **`AchievementContainer`**: Específico de la lógica de logros, usa otros componentes.
-21. **`ModalInfoContainer`**: Contenedor estilizado, menos crítico inicialmente.
-22. **`ModalTabs`**: Funcionalidad de pestañas, a menudo para modales complejos.
-23. **`Graph`**: Requiere investigación e integración de una librería externa, alta complejidad.
+### Día 3: App Principal, Navegación y Componentes Avanzados
+* **Objetivo**: Completar la biblioteca con componentes para la navegación principal, visualización de datos, controles adicionales, modales y elementos complejos necesarios para el resto de la aplicación (ej. `HomeFeatureScreen`, `ProfileFeatureScreen`).
+* **Componentes (en orden de prioridad):**
+    13. **`Switch` (13)**: Control booleano común.
+    14. **`CloseIconButton` (5)**: Para cerrar modales/diálogos.
+    15. **`RoundedIconButton` (6)**: Botón de icono genérico.
+    16. **`DangerButton` (3)**: Botón para acciones destructivas.
+    17. **`BottomNavBar` (15)**: Navegación principal inferior.
+    18. **`ProgressBar` (26)**: Indicador de progreso.
+    19. **`StatContainer` (22)**: Para mostrar estadísticas simples.
+    20. **`InputDate` (9)**: Campo de fecha (requiere `DatePickerDialog`).
+    21. **`InputSelect` (10)**: Campo de selección (requiere `ExposedDropdownMenuBox`).
+    22. **`Modal` (16)** (con `ModalCloseButton`, `ModalHeader`): Base para diálogos/bottom sheets.
+    23. **`ProfileContainer` (20)**: Contenedor específico para perfil.
+    24. **`HabitContainer` (24)**: Contenedor específico para hábitos.
+    25. **`AchievementContainer` (25)**: Contenedor específico para logros.
+    26. **`ModalInfoContainer` (18)**: Contenedor estilizado para modales.
+    27. **`ModalTabs` (17)**: Pestañas para modales/contenedores.
+    28. **`Graph` (23)**: Gráficos (requiere librería externa).
 
 ## Recomendaciones Generales
 
